@@ -22,7 +22,7 @@ export class Login extends PureComponent{
         const { user, userNameChange } = this.props;
         return(
             <div className="main-content">
-                <Button onClick={userNameChange}>Add My Name</Button>
+                <Button onClick={() => userNameChange("chinmay")}>Add My Name</Button>
                 <Button onClick={this.navigateToUser}>User Screen</Button>
                 <Button onClick={this.navigateToAdmin}>Admin Screen</Button>
                 <p>{user}</p>
@@ -39,10 +39,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    userNameChange: () => dispatch(userNameChange())
+    userNameChange: (name) => dispatch(userNameChange(name))
   };
 };
-
-// export default connect(mapStateToProps, mapDispatchToProps)(Login);
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));

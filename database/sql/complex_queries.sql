@@ -30,9 +30,9 @@ the project but are not in use in Stage - 3.
 
 -- Get occupied slots for a facility on a given date
 SELECT count(*) from availableslots 
-where slot_date lie '2022-08-22' and slot_id not in 
+where slot_date like '2022-08-22%' and slot_id not in 
 	(select slot_id from slotbookings 
-	where booking_date like '202-08-22%' and facility_id = '108'); 
+	where booking_date like '2022-08-22%' and facility_id = '108'); 
 
 -- Get count of occupied equipments for a specific sport at a given date and slot
 SELECT COUNT(*) FROM EquipmentRentals

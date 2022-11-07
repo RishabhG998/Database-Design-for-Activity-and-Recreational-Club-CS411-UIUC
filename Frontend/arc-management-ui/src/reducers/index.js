@@ -1,5 +1,7 @@
 const initialState = {
     user: null,
+    netid: null,
+    password: null,
     selectedFacility: null,
     selectedSport: null,
   }
@@ -12,6 +14,12 @@ const initialState = {
         return {
           ...state,
           user: action.payload
+        };
+        case "LOGIN_CREDS":
+        return {
+          ...state,
+          netid: action.payload_netid,
+          password: action.payload_password
         };
       default:
         // If this reducer doesn't recognize the action type, or doesn't

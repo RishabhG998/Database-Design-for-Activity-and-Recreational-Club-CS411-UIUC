@@ -5,3 +5,12 @@ export function userNameChange(userName) {
         payload: userName
     }
 };
+
+export function loginCreds(netid, password) {
+    console.log("(netid, password): (", netid, ", ", password, ")");
+    return {
+        type: "LOGIN_CREDS",
+        payload_netid: netid,
+        payload_password: password
+    }
+};

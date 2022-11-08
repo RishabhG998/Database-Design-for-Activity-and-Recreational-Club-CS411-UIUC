@@ -86,6 +86,7 @@ export class Login extends PureComponent{
                             <Paper elevation={10} style={paperStyle}>
                                 <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
                                     <Typography variant="h4" align="center" color="textPrimary" gutterBottom>Welcome to ARC-MS</Typography>
+                                    {/* <FaceIcon sx={{ m: 1, bgcolor: 'orange' }}></FaceIcon> */}
                                     <Avatar sx={{ m: 1, bgcolor: 'orange' }}>
                                     </Avatar>
                                     <Typography component="h1" variant="h5">

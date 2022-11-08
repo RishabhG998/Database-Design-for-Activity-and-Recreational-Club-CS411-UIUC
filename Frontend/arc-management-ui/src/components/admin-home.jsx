@@ -11,11 +11,24 @@ import equipment_rent_img from './images/equipment_rent.png';
 import facilities_booking_img from './images/facilities_booking.png';
 import event_img from './images/event.png';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Box, Card, CardActions, CardContent, CardMedia, Container, Grid, Typography } from "@mui/material";
+import { Box, Card, CardActions, CardContent, CardMedia, Container, Grid, Typography, Link } from "@mui/material";
 // import FaceIcon from '@mui/icons-material/Face';
 import SendIcon from '@mui/icons-material/Send';
 
 const theme = createTheme();
+
+function Copyright(props) {
+    return (
+      <Typography variant="body2" color="text.secondary" align="center" {...props}>
+        {'Copyright © '}
+        <Link color="inherit" href="https://github.com/cs411-alawini/fa22-cs411-Q-team028-SRKC">
+          SRKC-dev.com
+        </Link>{' '}
+        {new Date().getFullYear()}
+        {'.'}
+      </Typography>
+    );
+  }
 
 export class AdminHome extends PureComponent{
 
@@ -26,6 +39,7 @@ export class AdminHome extends PureComponent{
     onClick = e => {
         console.log(e.target.name);
         // debugger;
+        alert("Clicked on- " + e.target.name);
     };
 
 
@@ -242,6 +256,7 @@ export class AdminHome extends PureComponent{
                             </Card> 
                         </Grid>
                     </Grid>
+                    <Copyright sx={{ mt: 8, mb: 4 }} />
                 </Container>
             </div>   
         );

@@ -48,3 +48,13 @@ class BookSlot(Resource):
             return {'message': error_msg}, ret_code
         return result, ret_code
 
+@ns.route('/available_slots/<string:date>')
+class AvailableSlots(Resource):
+    def get(self, date):
+        if str(date).strip() == '':
+            return {'message': 'Please provide date'}, 400
+        result, error_msg, ret_code = db.get_available_slots(date)
+        if error_msg is not None:
+            return {'message': error_msg}, ret_code
+        return result, ret_code
+

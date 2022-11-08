@@ -8,71 +8,42 @@ sys.path.append(str(Path(__file__).parent.parent.parent.parent.absolute()))
 from database.scripts import main # required for DATE_SEPARATOR
 
 
-ns = Namespace('event', description='Event')
+ns = Namespace('events', description='Events')
 
-get_event_date_parser = ns.parser()
-get_event_date_parser.add_argument('event_date', type=str, required=False, default='')
-get_event_date_parser.add_argument('event_id', type=int, required=False, default=-1)
+post_event_parser = ns.parser()
+post_event_parser.add_argument('event_name', type=str, required=True, default='')
+post_event_parser.add_argument('event_description', type=str, required=False, default='')
+post_event_parser.add_argument('event_capacity', type=int, required=True, default=0)
+post_event_parser.add_argument('ticket_cost', type=float, required=True, default=0.0)
+post_event_parser.add_argument('event_date', type=str, required=True, default='')
+post_event_parser.add_argument('event_start_time', type=str, required=True, default='')
+post_event_parser.add_argument('event_end_time', type=str, required=True, default='')
+post_event_parser.add_argument('facility_id', type=int, required=True, default=0)
+post_event_parser.add_argument('sport_id', type=int, required=True, default=0)
 
-post_eventbooking_parser = ns.parser()
-post_eventbooking_parser.add_argument('net_id', type=str, required=True, default='')
-post_eventbooking_parser.add_argument('event_id', type=int, required=True, default=-1)
-post_eventbooking_parser.add_argument('ticket_count', type=int, required=True, default=0)
-
-put_eventbooking_parser = ns.parser()
-put_eventbooking_parser.add_argument('ticket_id', type=str, required=True, default='')
-put_eventbooking_parser.add_argument('net_id', type=str, required=True, default='')
-put_eventbooking_parser.add_argument('event_id', type=int, required=True, default=-1)
-put_eventbooking_parser.add_argument('ticket_count', type=int, required=True, default=0)
-
-delete_eventbooking_parser = ns.parser()
-delete_eventbooking_parser.add_argument('ticket_id', type=str, required=True, default='')
-
-@ns.route('/event')
+@ns.route('/events')
 class GetEventDetails(Resource):
-    @ns.expect(get_event_date_parser)
     def get(self):
-        data = get_event_date_parser.parse_args(strict=True)
-        event_date = data.get('event_date', None)
-        event_id = data.get('event_id', -1)
-        if event_id == -1 and str(event_date).strip() == '':
-            return {'message': 'Please provide either event_id or event_date'}, 400
-
-        if event_id == -1:
-            if main.DATE_SEPARATOR not in event_date: return {'message': f'Please provide event_date in the format YYYY{main.DATE_SEPARATOR}MM{main.DATE_SEPARATOR}DD'}, 400
-        result, error_msg, ret_code = db.get_event_info(event_date, event_id)
+        result, error_msg, ret_code = db.get_all_events()
         if error_msg: return {'message': error_msg}, ret_code
         return result, ret_code
 
-    @ns.expect(post_eventbooking_parser)
+    @ns.expect(post_event_parser)
     def post(self):
-        data = post_eventbooking_parser.parse_args(strict=True)
-        net_id = data.get('net_id', None)
-        event_id = data.get('event_id', -1)
-        ticket_count = data.get('ticket_count', 1)
-        if net_id is None: return {'message': 'Please provide net_id'}, 400
-        if event_id == -1: return {'message': 'Please provide event_id'}, 400
-        if ticket_count <= 0: return {'message': 'Please provide ticket_count > 0'}, 400
-        result, error_msg, ret_code = db.book_event(net_id, event_id, ticket_count)
-        if error_msg: return {'message': error_msg}, ret_code
-        return result, ret_code
+        args = post_event_parser.parse_args()
+        event_name = args.get('event_name', '')
+        event_description = args.get('event_description', '')
+        event_capacity = args.get('event_capacity', 0)
+        ticket_cost = args.get('ticket_cost', 0.0)
+        event_date = args.get('event_date', '')
+        event_start_time = args.get('event_start_time', '')
+        event_end_time = args.get('event_end_time', '')
+        facility_id = args.get('facility_id', 0)
+        sport_id = args.get('sport_id', 0)
 
-    @ns.expect(put_eventbooking_parser)
-    def put(self):
-        data = put_eventbooking_parser.parse_args(strict=True)
-        if data.get('ticket_id', '') is '': return {'message': 'Please provide ticket_id'}, 400
-        if data.get('net_id', '') is '': return {'message': 'Please provide net_id'}, 400
-        if data.get('event_id', -1) == -1: return {'message': 'Please provide event_id'}, 400
-        if data.get('ticket_count', 0) <= 0: return {'message': 'Please provide ticket_count > 0'}, 400
+        if event_name.strip() == '' or event_capacity <= 0 or ticket_cost <= 0.0 or event_date.strip() == '' or event_start_time.strip() == '' or event_end_time.strip() == '' or facility_id <= 0 or sport_id <= 0:
+            return {'message': 'Invalid event details (event_name, event_capacity, ticket_cost, event_date, event_start_time, event_end_time, facility_id, sport_id)'}, 400
 
-        result, error_msg, ret_code = db.update_event_booking(data.get('ticket_id', ''), data.get('net_id', ''), data.get('event_id', -1), data.get('ticket_count', 0))
-        if error_msg: return {'message': error_msg}, ret_code
-        return result, ret_code
-
-    @ns.expect(delete_eventbooking_parser)
-    def delete(self):
-        data = delete_eventbooking_parser.parse_args(strict=True)
-        if data.get('ticket_id', '') is '': return {'message': 'Please provide ticket_id'}, 400
-        result, error_msg, ret_code = db.cancel_event_booking(data.get('ticket_id', ''))
+        result, error_msg, ret_code = db.create_event(event_name, event_description, event_capacity, ticket_cost, event_date, event_start_time, event_end_time, facility_id, sport_id)
         if error_msg: return {'message': error_msg}, ret_code
         return result, ret_code

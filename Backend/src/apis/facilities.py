@@ -55,3 +55,10 @@ class GetfacilityDetails(Resource):
             return {'message': error_msg}, ret_code
         return result, ret_code
         
+@ns.route('/facilities')
+class GetAllFacilityDetails(Resource):
+    def get(self):
+        result, error_msg, ret_code = db.get_all_facility_info()
+        if error_msg is not None:
+            return {'message': error_msg}, ret_code
+        return result, ret_code

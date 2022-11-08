@@ -42,3 +42,11 @@ class GetsportDetails(Resource):
         if error_msg is not None:
             return {'message': error_msg}, ret_code
         return result, ret_code
+
+@ns.route('/sports')
+class GetAllSportDetails(Resource):
+    def get(self):
+        result, error_msg, ret_code = db.get_all_sport_info()
+        if error_msg is not None:
+            return {'message': error_msg}, ret_code
+        return result, ret_code

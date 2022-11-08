@@ -14,7 +14,7 @@ DB_USER = 'root'
 DB_PASS = 'roottoor'
 DATETIME_STRING_FORMAT = f'%Y{main.DATE_SEPARATOR}%m{main.DATE_SEPARATOR}%d'
 
-def run_query(query, execute_many = False, get_status = False, return_data = False):
+def run_query(query, execute_many = False, get_status = False, return_data = False, get_columns = False):
     db_conn = None
     try:
         db_conn = mysql.connector.connect(host = 'localhost', user = DB_USER, password = DB_PASS, database = 'SRKC')
@@ -26,6 +26,13 @@ def run_query(query, execute_many = False, get_status = False, return_data = Fal
         
         if return_data is False: db_conn.commit()
         if return_data:
+            if get_columns:
+                result = []
+                data = cur.fetchall()
+                columns = [i[0] for i in cur.description]
+                for i in range(len(data)):
+                    result.append(list(zip(columns, data[i])))
+                return result, None
             return cur.fetchall(), None
         if get_status:
             return True, None
@@ -92,18 +99,17 @@ def get_user_details(net_id):
     if net_id.strip() == '':
         return data, error_msg, ret_code
     else:
-        query = f'SELECT * FROM Users WHERE net_id = "{net_id}"'
-        result, error = run_query(query, return_data = True)
+        query = f'SELECT * FROM Users NATURAL JOIN Roles WHERE net_id = "{net_id}"'
+        result, error = run_query(query, return_data = True, get_columns=True)
         if not error:
             if result != []:
                 _result = result[0]
                 result = {}
-                columns = get_table_columns('Users')
-                for i in range(len(columns)):
-                    if columns[i] == 'date_of_birth':
-                        result[columns[i]] = _result[i].strftime(DATETIME_STRING_FORMAT)
+                for i in range(len(_result)):
+                    if _result[i][0] == 'date_of_birth':
+                        result[_result[i][0]] = _result[i][1].strftime(DATETIME_STRING_FORMAT)
                         continue
-                    result[columns[i]] = _result[i]
+                    result[_result[i][0]] = _result[i][1]
                 ret_code = 200
             else:
                 result = None
@@ -147,7 +153,6 @@ def insert_user_details(user_data):
         query += f'"{v}", '
     query = query[:-2]
     query += ')'
-    print(query)
     status, error_msg = run_query(query, get_status = True)
     if status is True:
         result, error_msg, ret_code = 'User details inserted successfully', None, 200
@@ -262,7 +267,65 @@ def delete_equipment_info(equipment_id, equipment_name):
             result, error_msg, ret_code = None, f'Error: {error_msg}', 500
     return result, error_msg, ret_code
 
+def book_equipment(equipment_count, rent_date, slot_id, net_id, equipment_id):
+    data, error_msg, ret_code = None, None, 400
+    if (str(equipment_count).strip() == '') or (str(rent_date).strip() == '') or (str(slot_id).strip() == '') or (str(net_id).strip() == '') or (str(equipment_id).strip() == ''):
+        error_msg = 'Please enter all of the required fields (Equipment Count, Rent Date, Slot ID, Net ID, Equipment ID)'
+    else:
+        total_equipment_count_query = f'SELECT equipment_count FROM Equipments WHERE equipment_id = {equipment_id}'
+        total_equipment_count, error = run_query(total_equipment_count_query, return_data = True)
+        if not error:
+            if total_equipment_count != []:
+                already_booked_equipment_count_query = f'SELECT SUM(equipment_count) FROM EquipmentRentals WHERE equipment_id = {equipment_id} AND rent_date = (SELECT CONCAT(slot_date, \' \', start_time) FROM AvailableSlots NATURAL JOIN Slots WHERE available_slot_id = {slot_id})'
+                already_booked_equipment_count, error = run_query(already_booked_equipment_count_query, return_data = True)
+                if not error and already_booked_equipment_count != []:
 
+                    if total_equipment_count[0][0] is None: total_equipment_count = 0
+                    else: total_equipment_count = total_equipment_count[0][0]
+                    if already_booked_equipment_count[0][0]is None: already_booked_equipment_count = 0
+                    else: already_booked_equipment_count = already_booked_equipment_count[0][0]
+
+                    if total_equipment_count - already_booked_equipment_count >= equipment_count:
+                        query = f'INSERT INTO EquipmentRentals (equipment_count, rent_date, available_slot_id, net_id, equipment_id) VALUES ({equipment_count}, "{rent_date}", {slot_id}, "{net_id}", {equipment_id})'
+                        status, error_msg = run_query(query, get_status = True)
+                        if status is True:
+                            data, error_msg, ret_code = 'Equipment booked successfully', None, 200
+                        else:
+                            data, error_msg, ret_code = None, f'Error: {error_msg}', 500
+                    else:
+                        data, error_msg, ret_code = None, 'Error: Not enough equipment available', 400
+                else:
+                    data, error_msg, ret_code = None, f'Error: {error}', 500
+            else:
+                data, error_msg, ret_code = None, 'Error: Equipment ID not found', 500
+        else:
+            data, error_msg, ret_code = None, f'Error: {error}', 500
+    return data, error_msg, ret_code
+
+
+
+def get_all_sport_info():
+    data, error_msg, ret_code = None, None, 400
+    query = f'SELECT * FROM Sports'
+    result, error = run_query(query, return_data = True)
+    if not error:
+        if result != []:
+            data = []
+            columns = get_table_columns('Sports')
+            for i in range(len(result)):
+                _result = {}
+                for j in range(len(columns)):
+                    _result[columns[j]] = result[i][j]
+                data.append(_result)
+            ret_code = 200
+        else:
+            data = None
+            ret_code = 404
+    else:
+        data = None
+        error_msg = error
+        ret_code = 500
+    return data, error_msg, ret_code
 
 def get_sport_info(sport_id = None, sport_name = None, regex_check = False):
     data, error_msg, ret_code = None, None, 400
@@ -320,6 +383,29 @@ def delete_sport_info(sport_name):
     return data, error_msg, ret_code
 
 
+
+def get_all_facility_info():
+    data, error_msg, ret_code = None, None, 400
+    query = f'SELECT * FROM Facilities'
+    result, error = run_query(query, return_data = True)
+    if not error:
+        if result != []:
+            data = []
+            columns = get_table_columns('Facilities')
+            for i in range(len(result)):
+                _result = {}
+                for j in range(len(columns)):
+                    _result[columns[j]] = result[i][j]
+                data.append(_result)
+            ret_code = 200
+        else:
+            data = None
+            ret_code = 404
+    else:
+        data = None
+        error_msg = error
+        ret_code = 500
+    return data, error_msg, ret_code
 
 def get_facility_info(facility_id = None, facility_name = None, sport_id = None, regex_check = False):
     data, error_msg, ret_code = None, None, 400
@@ -412,7 +498,6 @@ def get_available_facility_slots(facility_id, date):
                         continue
                     _result[all_columns[j]] = result[i][j]
                 data.append(_result)
-                print(result)
             ret_code = 200
         else:
             data = None
@@ -437,28 +522,24 @@ def book_slot(net_id, facility_id, slot_id, booking_date):
 
 
 
-
-def get_event_info(event_date, event_id):
+def get_eventbooking_info(event_date, event_id):
     data, error_msg, ret_code = None, None, 400
     if (event_date.strip() == '' or event_date is None) and (event_id == -1):
         return data, error_msg, ret_code
     else:
         if event_id != -1:
-            query = f'SELECT * FROM Events WHERE event_id = {event_id}'
+            query = f'SELECT * FROM EventBookings WHERE event_id = {event_id}'
         else:
-            query = f'SELECT * FROM Events WHERE event_date = "{event_date}"'
+            query = f'SELECT * FROM EventBookings WHERE booking_date like "{event_date}%"'
         result, error = run_query(query, return_data = True)
         if not error:
             if result != []:
                 data = []
-                columns = get_table_columns('Events')
+                columns = get_table_columns('EventBookings')
                 for i in range(len(result)):
                     _result = {}
                     for j in range(len(columns)):
-                        if columns[j] == 'event_start_time' or columns[j] == 'event_end_time':
-                            _result[columns[j]] = str(result[i][j])
-                            continue
-                        if columns[j] == 'event_date':
+                        if columns[j] == 'booking_date':
                             _result[columns[j]] = result[i][j].strftime(DATETIME_STRING_FORMAT)
                             continue
                         _result[columns[j]] = result[i][j]
@@ -478,7 +559,7 @@ def book_event(net_id, event_id, ticket_count):
     if str(event_id).strip() == '' or str(ticket_count).strip() == '' or str(net_id).strip() == '':
         return 'Invalid request', 400
 
-    data, error_msg, _ = get_event_info(event_date = '', event_id = event_id)
+    data, error_msg, _ = get_eventbooking_info(event_date = '', event_id = event_id)
     if data is None:
         return 'Event not found', 404
 
@@ -498,7 +579,6 @@ def book_event(net_id, event_id, ticket_count):
         else:
             today = datetime.now().strftime(DATETIME_STRING_FORMAT)
             query = f'INSERT INTO EventBookings (net_id, event_id, booking_date, ticket_count) VALUES ("{net_id}", {event_id}, {today}, {ticket_count})'
-            print(query)
             result, error = run_query(query)
             if not error:
                 return 'Booking successful', None, 200
@@ -510,7 +590,7 @@ def update_event_booking(ticket_id, net_id, event_id, ticket_count):
     if str(ticket_id).strip() == '' or str(event_id).strip() == '' or str(ticket_count).strip() == '' or str(net_id).strip() == '':
         return 'Invalid request', 400
 
-    data, error_msg, _ = get_event_info(event_date = '', event_id = event_id)
+    data, error_msg, _ = get_eventbooking_info(event_date = '', event_id = event_id)
     if data is None: return 'Event not found', 404
 
     _data, _error_msg, _ = get_user_details(net_id = net_id)
@@ -551,3 +631,94 @@ def cancel_event_booking(ticket_id):
     if not error:
         return 'Booking cancelled', None, 200
     return None, error, 500
+
+
+
+def get_all_events():
+    data, error_msg, ret_code = None, None, 400
+    query = f'SELECT * FROM Events'
+    result, error = run_query(query, return_data = True)
+    if not error:
+        if result != []:
+            data = []
+            columns = get_table_columns('Events')
+            for i in range(len(result)):
+                _result = {}
+                for j in range(len(columns)):
+                    if columns[j] == 'event_date':
+                        _result[columns[j]] = result[i][j].strftime(DATETIME_STRING_FORMAT)
+                        continue
+                    if columns[j] == 'event_start_time' or columns[j] == 'event_end_time':
+                        _result[columns[j]] = str(result[i][j])
+                        continue
+                    _result[columns[j]] = result[i][j]
+                data.append(_result)
+            ret_code = 200
+        else:
+            data = None
+            ret_code = 404
+    else:
+        data = None
+        error_msg = error
+        ret_code = 500
+    return data, error_msg, ret_code
+
+def create_event(event_name, event_description, event_capacity, ticket_cost, event_date, event_start_time, event_end_time, facility_id, sport_id):
+    data, error_msg, ret_code = None, None, 400
+    if str(event_name).strip() == '' or str(event_description).strip() == '' or str(event_capacity).strip() == '' or str(ticket_cost).strip() == '' or str(event_date).strip() == '' or str(event_start_time).strip() == '' or str(event_end_time).strip() == '' or str(facility_id).strip() == '' or str(sport_id).strip() == '':
+        return 'Invalid request', 400
+    query = f'SELECT * FROM Events WHERE event_name = "{event_name}"'
+    result, error = run_query(query, return_data = True)
+    if not error:
+        if result == []:
+            query = f'INSERT INTO Events (event_name, event_description, event_capacity, ticket_cost, event_date, event_start_time, event_end_time, facility_id, sport_id) VALUES ("{event_name}", "{event_description}", {event_capacity}, {ticket_cost}, "{event_date}", "{event_start_time}", "{event_end_time}", {facility_id}, {sport_id})'
+            result, error = run_query(query, get_status=True)
+            if not error:
+                data = 'Event created'
+                ret_code = 200
+            else:
+                data = None
+                error_msg = error
+                ret_code = 500
+        else:
+            data = None
+            error_msg = 'Event already exists'
+            ret_code = 409
+    else:
+        data = None
+        error_msg = error
+        ret_code = 500
+    return data, error_msg, ret_code
+
+
+
+def get_available_slots(date):
+    data, error_msg, ret_code = None, None, 400
+    query = f'SELECT * FROM AvailableSlots NATURAL JOIN Slots WHERE slot_date = "{date}"'
+    result, error = run_query(query, return_data = True, get_columns=True)
+    if not error:
+        if result != []:
+            data = []
+            for i in range(len(result)):
+                _result = {}
+                for j in range(len(result[i])):
+                    if result[i][j][0] == 'slot_date':
+                        _result[result[i][j][0]] = result[i][j][1].strftime(DATETIME_STRING_FORMAT)
+                        continue
+                    if result[i][j][0] == 'start_time' or result[i][j][0] == 'end_time':
+                        if ',' in str(result[i][j][1]):
+                            _result[result[i][j][0]] = str(result[i][j][1]).split(',')[1]
+                        else:
+                            _result[result[i][j][0]] = str(result[i][j][1])
+                        continue
+                    _result[result[i][j][0]] = result[i][j][1]
+                data.append(_result)
+            ret_code = 200
+        else:
+            data = None
+            ret_code = 404
+    else:
+        data = None
+        error_msg = error
+        ret_code = 500
+    return data, error_msg, ret_code

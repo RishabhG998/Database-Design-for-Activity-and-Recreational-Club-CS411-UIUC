@@ -12,9 +12,8 @@ import facilities_booking_img from './images/facilities_booking.png';
 import event_img from './images/event.png';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Box, Card, CardActions, CardContent, CardMedia, Container, Grid, Typography } from "@mui/material";
-import FaceIcon from '@mui/icons-material/Face';
-
-const cards = [1, 2, 3, 4, 5, 6];
+// import FaceIcon from '@mui/icons-material/Face';
+import SendIcon from '@mui/icons-material/Send';
 
 const theme = createTheme();
 
@@ -63,7 +62,7 @@ export class AdminHome extends PureComponent{
                                 </CardContent>
                                 {/* <FaceIcon/> */}
                                 <CardActions sx={{ height: '100%', display: 'flex', flexDirection: 'column' }} >
-                                    <Button sx={{alignItems: "center", justifyContent: "center"}} name="see_stats_card" size="small" onClick={this.onClick} >View</Button>
+                                    <Button sx={{alignItems: "center", justifyContent: "center", marginBottom: "21%"}} name="see_stats_card" size="small" onClick={this.onClick} variant="outlined">View</Button>
                                     {/* <Button size="small">Edit</Button> */}
                                 </CardActions>
                             </Card> 
@@ -92,7 +91,7 @@ export class AdminHome extends PureComponent{
                                     </Typography> */}
                                 </CardContent>
                             <CardActions sx={{ height: '100%', display: 'flex', flexDirection: 'column' }} >
-                                <Button sx={{alignItems: "center", justifyContent: "center"}} name="supervisors_card" size="small" onClick={this.onClick} >View</Button>
+                                <Button sx={{alignItems: "center", justifyContent: "center", marginBottom: "21%"}} name="supervisors_card" size="small" onClick={this.onClick} variant="outlined">View</Button>
                                 {/* <Button size="small">Edit</Button> */}
                             </CardActions>
                             </Card> 
@@ -121,7 +120,7 @@ export class AdminHome extends PureComponent{
                                     </Typography> */}
                                 </CardContent>
                             <CardActions sx={{ height: '100%', display: 'flex', flexDirection: 'column' }} >
-                                <Button sx={{alignItems: "center", justifyContent: "center"}} name="equipments_card" size="small" onClick={this.onClick} >View</Button>
+                                <Button sx={{alignItems: "center", justifyContent: "center", marginBottom: "21%"}} name="equipments_card" size="small" onClick={this.onClick} variant="outlined">View</Button>
                                 {/* <Button size="small">Edit</Button> */}
                             </CardActions>
                             </Card> 
@@ -150,7 +149,7 @@ export class AdminHome extends PureComponent{
                                     </Typography> */}
                                 </CardContent>
                             <CardActions sx={{ height: '100%', display: 'flex', flexDirection: 'column' }} >
-                                <Button sx={{alignItems: "center", justifyContent: "center"}} name="facilities_card" size="small" onClick={this.onClick} >View</Button>
+                                <Button sx={{alignItems: "center", justifyContent: "center", marginBottom: "21%"}} name="facilities_card" size="small" onClick={this.onClick} variant="outlined">View</Button>
                                 {/* <Button size="small">Edit</Button> */}
                             </CardActions>
                             </Card> 
@@ -179,7 +178,7 @@ export class AdminHome extends PureComponent{
                                     </Typography> */}
                                 </CardContent>
                             <CardActions sx={{ height: '100%', display: 'flex', flexDirection: 'column' }} >
-                                <Button sx={{alignItems: "center", justifyContent: "center"}} name="equipment_renting_card" size="small" onClick={this.onClick} >View</Button>
+                                <Button sx={{alignItems: "center", justifyContent: "center", marginBottom: "21%"}} name="equipment_renting_card" size="small" onClick={this.onClick} variant="outlined">View</Button>
                                 {/* <Button size="small">Edit</Button> */}
                             </CardActions>
                             </Card> 
@@ -208,7 +207,7 @@ export class AdminHome extends PureComponent{
                                     </Typography> */}
                                 </CardContent>
                             <CardActions sx={{ height: '100%', display: 'flex', flexDirection: 'column' }} >
-                                <Button sx={{alignItems: "center", justifyContent: "center"}} name="facilities_booking_card" size="small" onClick={this.onClick} >View</Button>
+                                <Button sx={{alignItems: "center", justifyContent: "center", marginBottom: "21%"}} name="facilities_booking_card" size="small" onClick={this.onClick} variant="outlined">View</Button>
                                 {/* <Button size="small">Edit</Button> */}
                             </CardActions>
                             </Card> 
@@ -237,7 +236,7 @@ export class AdminHome extends PureComponent{
                                     </Typography> */}
                                 </CardContent>
                             <CardActions sx={{ height: '100%', display: 'flex', flexDirection: 'column' }} >
-                                <Button sx={{alignItems: "center", justifyContent: "center"}} name="event_card" size="small" onClick={this.onClick} >View</Button>
+                                <Button sx={{alignItems: "center", justifyContent: "center", marginBottom: "21%"}} name="event_card" size="small" onClick={this.onClick} variant="outlined">View</Button>
                                 {/* <Button size="small">Edit</Button> */}
                             </CardActions>
                             </Card> 

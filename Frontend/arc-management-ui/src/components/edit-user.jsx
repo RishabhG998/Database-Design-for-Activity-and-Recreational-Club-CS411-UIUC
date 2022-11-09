@@ -1,9 +1,8 @@
 import { PureComponent } from "react";
 import { withRouter } from './common/withRouter';
 import { connect } from 'react-redux';
-import Button from '@mui/material/Button';
 import { Container } from "@mui/system";
-import { CssBaseline, Paper, Box, Typography, TextField, Link, FormControl, InputLabel, Select, MenuItem, Alert } from "@mui/material";
+import { CssBaseline, Paper, Box, Typography, TextField, Link, FormControl, InputLabel, Select, MenuItem, Alert, Button } from "@mui/material";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { getUserInfo, fetchingProgress, deleteUser, updateUserInfo, resetUserInfo } from '../actions/actions';
 import "./edit-user.css";
@@ -254,8 +253,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getUserInfo: async (netId) => dispatch(await getUserInfo(netId)),
         fetchingProgress: (isFetchingProgress) => dispatch(fetchingProgress(isFetchingProgress)),
-        deleteUser: async (netId) => dispatch(deleteUser(netId)),
-        updateUserInfo: async (userInfo) => dispatch(updateUserInfo(userInfo)),
+        deleteUser: async (netId) => dispatch(await deleteUser(netId)),
+        updateUserInfo: async (userInfo) => dispatch(await updateUserInfo(userInfo)),
         resetUserInfo: () => dispatch(resetUserInfo())
     };
   };

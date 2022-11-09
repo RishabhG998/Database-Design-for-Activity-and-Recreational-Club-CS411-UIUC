@@ -7,6 +7,7 @@ import AdminHome from "./components/admin-home";
 import Login from "./components/login";
 import NoPage from "./components/common/no-page";
 import EditUser from "./components/edit-user";
+import FacilitiesBooking from "./components/facilities-booking";
 
 export class App extends PureComponent {
 
@@ -26,7 +27,8 @@ export class App extends PureComponent {
             <Route path="login" element={<Login />}/>
             <Route path="userHome" element={<UserHome />} />
             <Route path="adminHome" element={<AdminHome />} />
-            <Route path="editUser" element={<EditUser />} />  
+            <Route path="editUser" element={<EditUser />} />
+            <Route path="facilityBooking" element={<FacilitiesBooking />}/>
           </Routes>
         </BrowserRouter>
       </div>

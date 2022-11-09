@@ -1,12 +1,16 @@
 const initialState = {
     user: null,
+    loggedInUserRole: null,
     netid: null,
     password: null,
     selectedFacility: null,
     selectedSport: null,
     fetchingProgressStatus: false,
     userInfo: null,
-    allRoles: { "User": 1,  "Administrator": 2, "Supervisor":3 }
+    allRoles: { "User": 1,  "Administrator": 2, "Supervisor":3 },
+    allSports: [],
+    facilitiesForSport: [],
+    slotsForFacility: []
   }
   
   // Use the initialState as a default value
@@ -18,7 +22,12 @@ const initialState = {
           ...state,
           user: action.payload
         };
-        case "LOGIN_CREDS":
+      case "SET_USER_ROLE":
+        return {
+          ...state,
+          loggedInUserRole: action.payload
+        };
+      case "LOGIN_CREDS":
         return {
           ...state,
           netid: action.payload_netid,
@@ -34,11 +43,36 @@ const initialState = {
           ...state,
           userInfo: action.payload
         };
-        case "RESET_USER_INFO":
-          return {
-            ...state,
-            userInfo: null
-          };
+      case "RESET_USER_INFO":
+        return {
+          ...state,
+          userInfo: null
+        };
+      case "ALL_SPORTS_FETCH":
+        return {
+          ...state,
+          allSports: action.payload
+        };
+      case "FACILITES_FOR_SPORT_FETCH":
+        return {
+          ...state,
+          facilitiesForSport: action.payload
+        };
+      case "RESET_FETCHED_FACILITIES":
+        return {
+          ...state,
+          facilitiesForSport: []
+        };
+      case "SLOTS_FOR_FACILITY_FETCH":
+        return {
+          ...state,
+          slotsForFacility: action.payload
+        };
+      case "RESET_FETCHED_SLOTS":
+        return {
+          ...state,
+          slotsForFacility: []
+        }
       default:
         // If this reducer doesn't recognize the action type, or doesn't
         // care about this specific action, return the existing state unchanged

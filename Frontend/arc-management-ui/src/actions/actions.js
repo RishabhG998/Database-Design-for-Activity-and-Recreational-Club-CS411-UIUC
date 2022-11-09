@@ -5,6 +5,13 @@ export function userNameChange(userName) {
     }
 };
 
+export function setLoggedInUserRole(role) {
+    return {
+        type: "SET_USER_ROLE",
+        payload: role
+    }
+};
+
 export async function  getUserInfo(netId) {
     const mockUserInfo = {
         netId: netId,
@@ -54,6 +61,56 @@ export function loginCreds(netid, password) {
     }
 };
 
+export async function getAllSports(){
+    const mockSports = [
+        {sportId: 1, sportName: "BasketBall"},
+        {sportId: 2, sportName: "Badminton"},
+    ]; 
+    return {
+        type: "ALL_SPORTS_FETCH",
+        payload: mockSports  
+    }
+};
+
+export async function getFacilitiesForSport(sportId){
+    const mockFacilities = [
+        {facilityId: 1, facilityName: "BasketBall Court 1"},
+        {facilityId: 2, facilityName: "BasketBall Court 2"},
+    ];
+    return {
+        type: "FACILITES_FOR_SPORT_FETCH",
+        payload: mockFacilities  
+    }
+};
+
+export function resetFacilitiesForSport() {
+    return {
+        type: "RESET_FETCHED_FACILITIES"
+    }
+};
+
+export async function getSlotsForFacility(facilityId, date){
+    const mockSlots = [
+        {slotId: 1, slot: "12:00 to 13:00"},
+        {slotId: 2, slot: "15:00 to 16:00"},
+    ];
+    return {
+        type: "SLOTS_FOR_FACILITY_FETCH",
+        payload: mockSlots  
+    };
+};
+
+export function resetslotsForFacility() {
+    return {
+        type: "RESET_FETCHED_SLOTS"
+    }
+};
+
+export function bookFacilitySlot(requestBody) {
+    return {
+        type: "BOOK_FACILITY_SLOT"
+    };
+};
 
 // date: yyyy-mm-dd
 // time: yyyy-mm-dd hh:mm:ss

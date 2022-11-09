@@ -1,7 +1,7 @@
 import { PureComponent } from "react";
 import Button from '@mui/material/Button';
 import {withRouter} from './common/withRouter';
-import { userNameChange, loginCreds } from '../actions/actions';
+import { userNameChange, loginCreds, setLoggedInUserRole } from '../actions/actions';
 import { connect } from 'react-redux'
 import React from "react";
 import { CssBaseline, Grid, Paper, Box, Avatar, Typography, TextField, FormControlLabel, Checkbox, Link } from "@mui/material";
@@ -50,12 +50,14 @@ export class Login extends PureComponent{
     };
 
     handleSubmit = e => {
+      const { setLoggedInUserRole } = this.props;
       e.preventDefault();
       console.log("NetID- "+this.state.stateNid);
       console.log("Password- "+this.state.statePass);
       // this.setState({netid: "", password: ""});
       this.props.loginCreds(this.state.stateNid, this.state.statePass);
       console.log("netid- "+this.props.netid);
+      setLoggedInUserRole("User");
   }
 
   onChange = e => {
@@ -157,7 +159,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     userNameChange: (name) => dispatch(userNameChange(name)),
-    loginCreds: (netid, password) => dispatch(loginCreds(netid, password))
+    loginCreds: (netid, password) => dispatch(loginCreds(netid, password)),
+    setLoggedInUserRole: (role) => dispatch(setLoggedInUserRole(role))
   };
 };
 

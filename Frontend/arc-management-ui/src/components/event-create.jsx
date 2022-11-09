@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import { Container } from "@mui/system";
 import { CssBaseline, Paper, Box, Typography, TextField, Link, FormControl, InputLabel, Select, MenuItem, Alert, Stack } from "@mui/material";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { getUserInfo, fetchingProgress, deleteUser, updateUserInfo, resetUserInfo, getAllSportsInfo } from '../actions/actions';
+import { getUserInfo, fetchingProgress, deleteUser, updateUserInfo, resetUserInfo, getAllSports, getFacilitiesForSport, getSlotsForFacility, resetslotsForFacility } from '../actions/actions';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -47,48 +47,111 @@ export class CreateEvent extends PureComponent{
         ticketCost: "",
         eventDate: new Date(),
         eventStartTime: new Date(),
-        eventEndTime: new Date(1667989248204),
-        sportId: "",
+        eventEndTime: new Date(),
+        selectedSport: 0,
         facilityId: "",
         fetchedSportsInfo: [],
         fetchedFacilityInfo: [],
+        selectedFacility: 0,
+        // allSports: null,
         actionSuccess: false
       };
     }
 
-    handleOnClickSportsInfo = async () => {
-        const { getAllSportsInfo } = this.props;
-        await getAllSportsInfo().then( () => {
-            const { allSportsInfo } = this.props;
-            console.log(allSportsInfo);
-            this.setState({
-                fetchedSportsInfo: allSportsInfo
-            }); 
-        });  
-    }
+    async componentDidMount () {
+        const { getAllSports } = this.props;
+        await getAllSports();
+    };
 
     getAllSportsOption = () => {
-        const { allRoles } = this.props;
-        const { updatedRole } = this.state;
+        const { allSports } = this.props;
+        const { selectedSport } = this.state;
+        // console.log(selectedSport);
         return (
             <FormControl fullWidth>
-                <InputLabel id="roles-label">Role</InputLabel>
+                <InputLabel id="sports-label">Sport</InputLabel>
                 <Select
-                    labelId="roles-label"
-                    id="user-role"
-                    value={updatedRole}
-                    label="Role"
-                    onChange={(e) => this.onChangeInputField(e, "role")}
+                    labelId="sports-label"
+                    id="all-sports-select"
+                    value={selectedSport}
+                    label="Sport"
+                    onChange={(e) => this.onChangeSport(e)}
                 >
+                    <MenuItem value={0} key={0}>Select Sport</MenuItem>
                     {
-                        Object.keys(allRoles).map((role, i) => {
-                            return (<MenuItem value={allRoles[role]} key={i}>{role}</MenuItem>);
+                        allSports && allSports.length>0 && allSports.map((sport, i) => {
+                            // console.log(sport);
+                            return (<MenuItem value={sport["sportId"]} key={i+1}>{sport["sportName"]}</MenuItem>);
                         })
                     }                    
                 </Select>
             </FormControl>
         )
+    };
+
+    handleOnClickSportsInfo = async () => {
+        const { getAllSports } = this.props;
+        await getAllSports().then( () => {
+            const { allSports } = this.props;
+            // console.log(allSports);
+            this.setState({
+                fetchedSportsInfo: allSports
+            }); 
+        });  
     }
+
+    onChangeSport = async (e) => {
+        const { getFacilitiesForSport, resetslotsForFacility, resetFacilitiesForSport } = this.props;
+        const selectedSport = e.target.value;
+        // console.log("onChangeSport || ", e.target.value)
+        this.setState({ selectedSport: e.target.value });
+
+        if(selectedSport > 0){
+            await getFacilitiesForSport(e.target.value);
+        }
+        else{
+            resetslotsForFacility();
+            resetFacilitiesForSport();
+        }
+    }
+
+    getFacilitiesForSportOption = () => {
+        const { facilitiesForSport } = this.props;
+        const { selectedFacility } = this.state;
+        return (
+            <FormControl id ="facilities-form" fullWidth>
+                <InputLabel id="facilities-label">Facility</InputLabel>
+                <Select
+                    labelId="facility-label"
+                    id="facilitis-of-sport-select"
+                    value={selectedFacility}
+                    label="Facility"
+                    onChange={(e) => this.onChangeFacility(e)}
+                >
+                    <MenuItem value={0} key={0}>Select Facility</MenuItem>
+                    {
+                        facilitiesForSport && facilitiesForSport.length>0 && facilitiesForSport.map((facility, i) => {
+                            return (<MenuItem value={facility["facilityId"]} key={i+1}>{facility["facilityName"]}</MenuItem>);
+                        })
+                    }                   
+                </Select>
+            </FormControl>
+        )
+    };
+
+    onChangeFacility = async (e) => {
+        const { getSlotsForFacility, resetslotsForFacility } = this.props;
+        const { selectedDate } = this.state
+        const selectedFacility = e.target.value;
+        this.setState({selectedFacility: selectedFacility});
+        // console.log("onChangeFacility || ", e.target.value)
+        if(selectedFacility > 0 && !!selectedDate){
+            await getSlotsForFacility(selectedFacility, selectedDate);
+        }
+        else{
+            resetslotsForFacility();
+        }
+    };
 
     onChangeInputField = (e, type) => {
         // debugger;
@@ -121,40 +184,14 @@ export class CreateEvent extends PureComponent{
         }
     };
 
-    handleSubmit = async () => {
-        const { updateUserInfo, resetUserInfo, userInfo } = this.props;
-        const { updatedName, updatedEmail, updatedContactNo, updatedDoB, updatedRole } = this.state;
-        const requestBody = {
-            netId: userInfo.netId,
-            name: updatedName,
-            roleID: updatedRole,
-            contactNumber: updatedContactNo,
-            emailID: updatedEmail,
-            dob: updatedDoB
-        };
-        await updateUserInfo(requestBody).then(() => {
-            this.setState({enteredNetId: "", actionSuccess: true});
-            resetUserInfo();
-
-        });
-    };
-
-    handleDeleteUser = async () => {
-        const { userInfo, resetUserInfo, deleteUser } = this.props;
-        await deleteUser(userInfo.netId).then(() => {
-            this.setState({enteredNetId: "", actionSuccess: true});
-            resetUserInfo();
-        });
-    };
-
     onAlertClose = () =>{
         this.setState({actionSuccess: false});
     };
 
     render(){
-        const { eventName, eventDescription, eventCapacity, ticketCost, eventDate, eventStartTime, eventEndTime, sportId, facilityId, fetchedSportsInfo, fetchedFacilityInfo, actionSuccess } = this.state;
-        console.log("eventStartTime-"+eventStartTime);
-        console.log("eventEndTime-"+eventEndTime);
+        const { eventName, eventDescription, eventCapacity, ticketCost, eventDate, eventStartTime, eventEndTime, selectedSportId, facilityId, fetchedSportsInfo, fetchedFacilityInfo, actionSuccess } = this.state;
+        const { allSports, facilitiesForSport } = this.props;
+        
         return(
             <div>
                 <ThemeProvider theme={theme}>
@@ -178,7 +215,7 @@ export class CreateEvent extends PureComponent{
                                             name="eventName"
                                             autoComplete="Event Name"
                                             autoFocus
-                                            
+                                            value={this.state.eventName}
                                             onChange={(e) => this.onChangeInputField(e, "eventName")}
                                         />
                                         <TextField
@@ -189,7 +226,7 @@ export class CreateEvent extends PureComponent{
                                             label="Event Description"
                                             id="eventDescription"
                                             autoComplete="Event Description"
-                                            
+                                            value={eventDescription}
                                             onChange={(e) => this.onChangeInputField(e, "eventDescription")}
                                         />
                                         <TextField
@@ -200,7 +237,7 @@ export class CreateEvent extends PureComponent{
                                             label="Event Capacity"
                                             id="eventCapacity"
                                             autoComplete="No."
-                                            
+                                            value={eventCapacity}
                                             onChange={(e) => this.onChangeInputField(e, "eventCapacity")}
                                         />
                                         <TextField
@@ -211,7 +248,7 @@ export class CreateEvent extends PureComponent{
                                             label="Ticket Cost"
                                             id="ticketCost"
                                             autoComplete="Amount"
-                                            
+                                            value={ticketCost}
                                             onChange={(e) => this.onChangeInputField(e, "ticketCost")}
                                         />
                                         <TextField
@@ -248,6 +285,8 @@ export class CreateEvent extends PureComponent{
                                                 />    
                                             </LocalizationProvider>
                                         </Stack>
+                                        {allSports && allSports.length>0 && this.getAllSportsOption()}
+                                        {facilitiesForSport && facilitiesForSport.length>0 && this.getFacilitiesForSportOption()}
                                         <Button
                                             id="createEventBtn"
                                             type="submit"
@@ -273,16 +312,21 @@ const mapStateToProps = (state) => {
         fetchingProgressStatus: state.fetchingProgressStatus,
         userInfo: state.userInfo,
         allRoles: state.allRoles,
-        allSportsInfo: state.allSportsInfo
+        allSports: state.allSports,
+        facilitiesForSport: state.facilitiesForSport,
+        slotsForFacility: state.slotsForFacility
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getAllSportsInfo: async () => dispatch(await getAllSportsInfo()),
+        getAllSports: async () => dispatch(await getAllSports()),
+        getFacilitiesForSport: async (sportId) => dispatch(await getFacilitiesForSport(sportId)),
         fetchingProgress: (isFetchingProgress) => dispatch(fetchingProgress(isFetchingProgress)),
         deleteUser: async (netId) => dispatch(deleteUser(netId)),
         updateUserInfo: async (userInfo) => dispatch(updateUserInfo(userInfo)),
+        getSlotsForFacility: async (facilityId, date) => dispatch(await getSlotsForFacility(facilityId, date)),
+        resetslotsForFacility: () => dispatch(resetslotsForFacility()),
         resetUserInfo: () => dispatch(resetUserInfo())
     };
   };

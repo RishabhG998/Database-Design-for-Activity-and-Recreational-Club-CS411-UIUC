@@ -68,7 +68,7 @@ export class CreateEvent extends PureComponent{
         const { selectedSport } = this.state;
         // console.log(selectedSport);
         return (
-            <FormControl fullWidth>
+            <FormControl fullWidth id="sports-form">
                 <InputLabel id="sports-label">Sport</InputLabel>
                 <Select
                     labelId="sports-label"
@@ -77,7 +77,7 @@ export class CreateEvent extends PureComponent{
                     label="Sport"
                     onChange={(e) => this.onChangeSport(e)}
                 >
-                    <MenuItem value={0} key={0}>Select Sport</MenuItem>
+                    <MenuItem className="select-sport-dropdown" value={0} key={0}>Select Sport</MenuItem>
                     {
                         allSports && allSports.length>0 && allSports.map((sport, i) => {
                             // console.log(sport);
@@ -128,7 +128,7 @@ export class CreateEvent extends PureComponent{
                     label="Facility"
                     onChange={(e) => this.onChangeFacility(e)}
                 >
-                    <MenuItem value={0} key={0}>Select Facility</MenuItem>
+                    <MenuItem className="select-facility-dropdown" value={0} key={0}>Select Facility</MenuItem>
                     {
                         facilitiesForSport && facilitiesForSport.length>0 && facilitiesForSport.map((facility, i) => {
                             return (<MenuItem value={facility["facilityId"]} key={i+1}>{facility["facilityName"]}</MenuItem>);

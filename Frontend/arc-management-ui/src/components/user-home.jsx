@@ -75,7 +75,7 @@ export class UserHome extends PureComponent{
                                     </Typography> */}
                                 </CardContent>
                             <CardActions sx={{ height: '100%', display: 'flex', flexDirection: 'column' }} >
-                                <Button sx={{alignItems: "center", justifyContent: "center", marginBottom: "21%"}} name="equipment_renting_card" size="small" onClick={this.onClick} variant="outlined">View</Button>
+                                <Button sx={{alignItems: "center", justifyContent: "center", marginBottom: "21%"}} name="equipment_renting_card" size="small" onClick={this.onClick} variant="outlined" endIcon={<SendIcon/>}>View</Button>
                                 {/* <Button size="small">Edit</Button> */}
                             </CardActions>
                             </Card> 
@@ -104,7 +104,7 @@ export class UserHome extends PureComponent{
                                     </Typography> */}
                                 </CardContent>
                             <CardActions sx={{ height: '100%', display: 'flex', flexDirection: 'column' }} >
-                                <Button sx={{alignItems: "center", justifyContent: "center", marginBottom: "21%"}} name="facilities_booking_card" size="small" onClick={this.onClick} variant="outlined">View</Button>
+                                <Button sx={{alignItems: "center", justifyContent: "center", marginBottom: "21%"}} name="facilities_booking_card" size="small" onClick={this.onClick} variant="outlined" endIcon={<SendIcon/>}>View</Button>
                                 {/* <Button size="small">Edit</Button> */}
                             </CardActions>
                             </Card> 
@@ -133,7 +133,7 @@ export class UserHome extends PureComponent{
                                     </Typography> */}
                                 </CardContent>
                             <CardActions sx={{ height: '100%', display: 'flex', flexDirection: 'column' }} >
-                                <Button sx={{alignItems: "center", justifyContent: "center", marginBottom: "21%"}} name="event_booking_card" size="small" onClick={this.onClick} variant="outlined">View</Button>
+                                <Button sx={{alignItems: "center", justifyContent: "center", marginBottom: "21%"}} name="event_booking_card" size="small" onClick={this.onClick} variant="outlined" endIcon={<SendIcon/>}>View</Button>
                                 {/* <Button size="small">Edit</Button> */}
                             </CardActions>
                             </Card> 

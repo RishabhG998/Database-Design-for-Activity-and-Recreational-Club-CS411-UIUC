@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import React from "react";
 import { CssBaseline, Grid, Paper, Box, Avatar, Typography, TextField, FormControlLabel, Checkbox, Link } from "@mui/material";
 import { Container } from "@mui/system";
-import FaceIcon from '@mui/icons-material/Face';
+import AccountBoxTwoTone from '@mui/icons-material/AccountBoxTwoTone';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -86,8 +86,9 @@ export class Login extends PureComponent{
                             <Paper elevation={10} style={paperStyle}>
                                 <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
                                     <Typography variant="h4" align="center" color="textPrimary" gutterBottom>Welcome to ARC-MS</Typography>
-                                    {/* <FaceIcon sx={{ m: 1, bgcolor: 'orange' }}></FaceIcon> */}
+                                      {/* <FaceIcon sx={{ m: 1, bgcolor: 'orange' }}></FaceIcon> */}
                                     <Avatar sx={{ m: 1, bgcolor: 'orange' }}>
+                                      <AccountBoxTwoTone/>
                                     </Avatar>
                                     <Typography component="h1" variant="h5">
                                         Sign in

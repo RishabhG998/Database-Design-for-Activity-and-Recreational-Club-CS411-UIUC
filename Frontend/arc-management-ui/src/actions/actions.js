@@ -112,5 +112,19 @@ export function bookFacilitySlot(requestBody) {
     };
 };
 
+export function getAdvQuery1Results() {
+    const mockQuery1Results = [
+        { userName: "Saket", timeSpent: "22" },
+        { userName: "Rishabh", timeSpent: "100" },
+        { userName: "Chinmay", timeSpent: "80" },
+        { userName: "Kedar", timeSpent: "80" },
+        { userName: "Bruce", timeSpent: "78" },
+    ];
+    return {
+        type: "ADV_QUERY_1_RESULTS",
+        payload: mockQuery1Results
+    };
+};
+
 // date: yyyy-mm-dd
 // time: yyyy-mm-dd hh:mm:ss

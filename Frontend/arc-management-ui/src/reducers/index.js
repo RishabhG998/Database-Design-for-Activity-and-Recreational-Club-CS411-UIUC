@@ -73,6 +73,11 @@ const initialState = {
           ...state,
           slotsForFacility: []
         }
+        case "ADV_QUERY_1_RESULTS":
+        return {
+          ...state,
+          advQuery1Results: action.payload
+        }
       default:
         // If this reducer doesn't recognize the action type, or doesn't
         // care about this specific action, return the existing state unchanged

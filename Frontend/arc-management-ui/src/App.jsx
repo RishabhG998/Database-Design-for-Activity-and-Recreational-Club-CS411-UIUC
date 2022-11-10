@@ -9,6 +9,7 @@ import NoPage from "./components/common/no-page";
 import EditUser from "./components/edit-user";
 import FacilitiesBooking from "./components/facilities-booking";
 import CreateEvent from "./components/event-create"
+import ShowStats from './components/show-stats';
 
 export class App extends PureComponent {
 
@@ -31,6 +32,7 @@ export class App extends PureComponent {
             <Route path="editUser" element={<EditUser />} />
             <Route path="facilityBooking" element={<FacilitiesBooking />}/>
             <Route path="createEvent" element={<CreateEvent />}/>
+            <Route path="showStats" element={<ShowStats />}/>
           </Routes>
         </BrowserRouter>
       </div>

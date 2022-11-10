@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import { createTheme, CssBaseline, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider, Typography } from "@mui/material";
 import { Box, Container, styled } from "@mui/system";
 import { tableCellClasses } from '@mui/material/TableCell';
-import {
-    ArgumentAxis,
-    ValueAxis,
-    Chart,
-    BarSeries,
-  } from '@devexpress/dx-react-chart-material-ui';
+// import {
+//     ArgumentAxis,
+//     ValueAxis,
+//     Chart,
+//     BarSeries,
+//   } from '@devexpress/dx-react-chart-material-ui';
 import { getAdvQuery1Results } from "../actions/actions";
     
 const theme = createTheme({
@@ -89,7 +89,7 @@ export class ShowStats extends PureComponent {
                                             </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                            {advQuery1Results.map((row) => (
+                                            {advQuery1Results && advQuery1Results.map((row) => (
                                                 <StyledTableRow key={row.userName}>
                                                 <StyledTableCell align="center" component="th" scope="row">
                                                     {row.userName}

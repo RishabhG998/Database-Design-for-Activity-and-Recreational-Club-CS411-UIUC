@@ -50,18 +50,15 @@ export class Login extends PureComponent{
     };
 
     handleSubmit = e => {
-      const { setLoggedInUserRole } = this.props;
+      const { setLoggedInUserRole, loginCreds } = this.props;
+      const { stateNid, statePass } = this.state;
       e.preventDefault();
-      console.log("NetID- "+this.state.stateNid);
-      console.log("Password- "+this.state.statePass);
-      // this.setState({netid: "", password: ""});
-      this.props.loginCreds(this.state.stateNid, this.state.statePass);
-      console.log("netid- "+this.props.netid);
-      setLoggedInUserRole("User");
+      loginCreds(stateNid, statePass);
+      setLoggedInUserRole("Administrator");
+      this.props.navigate('/equipmentBooking');
   }
 
   onChange = e => {
-      // console.log(e.target.value);
       if (e.target.name === 'netid')
         this.setState({ stateNid: e.target.value });
       else if (e.target.name === 'password') 

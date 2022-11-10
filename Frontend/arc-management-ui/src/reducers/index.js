@@ -10,7 +10,9 @@ const initialState = {
     allRoles: { "User": 1,  "Administrator": 2, "Supervisor":3 },
     allSports: [],
     facilitiesForSport: [],
-    slotsForFacility: []
+    slotsForFacility: [],
+    equipmentsForSport: [],
+    slotsForEquipment: []
   }
   
   // Use the initialState as a default value
@@ -68,11 +70,31 @@ const initialState = {
           ...state,
           slotsForFacility: action.payload
         };
-      case "RESET_FETCHED_SLOTS":
+      case "RESET_FETCHED_FACILITY_SLOTS":
         return {
           ...state,
           slotsForFacility: []
-        }
+        };
+      case "EQUIPMENT_FOR_SPORT_FETCH":
+        return {
+          ...state,
+          equipmentsForSport: action.payload
+        };
+      case "RESET_FETCHED_EQUIPMENTS":
+        return {
+          ...state,
+          equipmentsForSport: []
+        };
+      case "SLOTS_FOR_EQUIPMENT_FETCH":
+        return {
+          ...state,
+          slotsForEquipment: action.payload
+        };
+      case "RESET_FETCHED_EQUIPMENT_SLOTS":
+        return {
+          ...state,
+          slotsForEquipment: []
+        };
         case "ADV_QUERY_1_RESULTS":
         return {
           ...state,

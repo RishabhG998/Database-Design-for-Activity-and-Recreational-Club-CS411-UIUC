@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { Container } from "@mui/system";
 import { CssBaseline, Paper, Box, Typography, TextField, Link, FormControl, InputLabel, Select, MenuItem, Alert, Button } from "@mui/material";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { getAllSports, getFacilitiesForSport, resetFacilitiesForSport, getSlotsForFacility, resetslotsForFacility, bookFacilitySlot } from '../actions/actions';
-import "./facilities-bookings.css";
+import { getAllSports, getEquipmentsForSport, resetEquipmentsForSport, getSlotsForEquipment, resetslotsForEquipment, bookEquipmentSlot } from '../actions/actions';
+import "./equipment-bookings.css";
 
 const theme = createTheme({
     typography: {
@@ -29,19 +29,19 @@ return (
 );
 }
 
-
-export class FacilitiesBooking extends PureComponent{
+export class EquipmentBooking extends PureComponent{
     constructor(props){
         super(props);
         this.state = {
           actionSuccess: false,
           selectedSport: 0,
-          selectedFacility: 0,
+          selectedEquipment: 0,
           selectedDate: (new Date()).toJSON().substring(0,10),
           selectedSlot: 0,
-          enteredNetId: props.netid
+          enteredNetId: props.loggedInUserRole && props.loggedInUserRole==="Administrator" ? "" : props.netid,
+          selectedEquipmentCount: 1
         };
-    }
+    };
 
     async componentDidMount () {
         const { getAllSports } = this.props;
@@ -77,35 +77,36 @@ export class FacilitiesBooking extends PureComponent{
     };
 
     onChangeSport = async (e) => {
-        const { getFacilitiesForSport, resetslotsForFacility, resetFacilitiesForSport } = this.props;
+        const { getEquipmentsForSport, resetEquipmentsForSport, resetslotsForEquipment } = this.props;
         const selectedSport = e.target.value;
-        this.setState({selectedSport: selectedSport, selectedFacility: 0, selectedSlot: 0});
+        this.setState({selectedSport: selectedSport, selectedEquipment: 0, selectedSlot: 0, selectedEquipmentCount: 0});
         if(selectedSport > 0){
-            await getFacilitiesForSport(selectedSport);
+            await getEquipmentsForSport(selectedSport);
         }
         else{
-            resetslotsForFacility();
-            resetFacilitiesForSport();
+            resetslotsForEquipment();
+            resetEquipmentsForSport();
+            this.setState({});
         }
-    }
+    };
 
-    getFacilitiesForSportOption = () => {
-        const { facilitiesForSport } = this.props;
-        const { selectedFacility } = this.state;
+    getEquipmentsForSportOption = () => {
+        const { equipmentsForSport } = this.props;
+        const { selectedEquipment } = this.state;
         return (
-            <FormControl id ="facilities-form" fullWidth>
-                <InputLabel id="facilities-label">Facility</InputLabel>
+            <FormControl id ="equipments-form" fullWidth>
+                <InputLabel id="equipments-label">Equipment</InputLabel>
                 <Select
-                    labelId="facility-label"
-                    id="facilitis-of-sport-select"
-                    value={selectedFacility}
-                    label="Facility"
-                    onChange={(e) => this.onChangeFacility(e)}
+                    labelId="equipments-label"
+                    id="equipments-of-sport-select"
+                    value={selectedEquipment}
+                    label="Equipment"
+                    onChange={(e) => this.onChangeEquipment(e)}
                 >
-                    <MenuItem value={0} key={0}>Select Facility</MenuItem>
+                    <MenuItem value={0} key={0}>Select Equipment</MenuItem>
                     {
-                        facilitiesForSport && facilitiesForSport.length>0 && facilitiesForSport.map((facility, i) => {
-                            return (<MenuItem value={facility["facilityId"]} key={i+1}>{facility["facilityName"]}</MenuItem>);
+                        equipmentsForSport && equipmentsForSport.length>0 && equipmentsForSport.map((equipment, i) => {
+                            return (<MenuItem value={equipment["equipmentId"]} key={i+1}>{equipment["equipmentName"]}</MenuItem>);
                         })
                     }                   
                 </Select>
@@ -113,39 +114,52 @@ export class FacilitiesBooking extends PureComponent{
         )
     };
 
-    onChangeFacility = async (e) => {
-        const { getSlotsForFacility, resetslotsForFacility } = this.props;
+    onChangeEquipment = async (e) => {
+        const { getSlotsForEquipment, resetslotsForEquipment } = this.props;
         const { selectedDate } = this.state
-        const selectedFacility = e.target.value;
-        this.setState({selectedFacility: selectedFacility, selectedSlot: 0});
-        if(selectedFacility > 0 && !!selectedDate){
-            await getSlotsForFacility(selectedFacility, selectedDate);
+        const selectedEquipment = e.target.value;
+        this.setState({selectedEquipment: selectedEquipment,  selectedSlot: 0, selectedEquipmentCount: 0});
+        if(selectedEquipment > 0 && !!selectedDate){
+            await getSlotsForEquipment(selectedEquipment, selectedDate);
         }
         else{
-            resetslotsForFacility();
+            resetslotsForEquipment();
         }
     };
 
-    getSlotsForFacilityOption = () => {
-        const { slotsForFacility } = this.props;
-        const { selectedSlot } = this.state;
+    getSlotsForEquipmentOption = () => {
+        const { slotsForEquipment } = this.props;
+        const { selectedSlot, selectedEquipmentCount } = this.state;
         return (
             <FormControl id ="slots-form" fullWidth>
                 <InputLabel id="slots-label">Slots</InputLabel>
                 <Select
                     labelId="slots-label"
-                    id="slots-of-facility-select"
+                    id="slots-of-equipment-select"
                     value={selectedSlot}
                     label="Slots"
                     onChange={(e) => this.onChangeSlot(e)}
                 >
                     <MenuItem value={0} key={0}>Select Slot</MenuItem>
                     {
-                        slotsForFacility && slotsForFacility.length>0 && slotsForFacility.map((slot, i) => {
+                        slotsForEquipment && slotsForEquipment.length>0 && slotsForEquipment.map((slot, i) => {
                             return (<MenuItem value={slot["slotId"]} key={i+1}>{slot["slot"]}</MenuItem>);
                         })
                     }                   
                 </Select>
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="equipmentCount"
+                    label="Equipment Count"
+                    type="number"
+                    id="equipment-equipment-count"
+                    autoComplete="Equipment Count"
+                    value={selectedEquipmentCount}
+                    onChange={(e) => this.onCountChange(e)}
+                    InputLabelProps={{ shrink: true }}
+                />
             </FormControl>
         )
     };
@@ -154,25 +168,30 @@ export class FacilitiesBooking extends PureComponent{
         this.setState({selectedSlot: e.target.value});
     };
 
+    onCountChange = (e) => {
+        this.setState({selectedEquipmentCount: e.target.value});
+    }
+
     onDateChange = (e) => {
         this.setState({selectedDate: e.target.value});
     };
 
     handleSubmit = async (e) => {
         e.preventDefault();
-        const { bookFacilitySlot, netid, resetslotsForFacility, resetFacilitiesForSport, loggedInUserRole } = this.props;
-        const { selectedFacility, selectedSlot, enteredNetId } = this.state;
+        const { bookEquipmentSlot, netid, resetslotsForEquipment, resetEquipmentsForSport, loggedInUserRole } = this.props;
+        const { selectedEquipment, selectedSlot, enteredNetId, selectedEquipmentCount } = this.state;
         const userNetId = loggedInUserRole!=="Administrator" ? netid : enteredNetId;
         const requestBody = {
             netId: userNetId,
-            facilityId: selectedFacility,
+            equipmentId: selectedEquipment,
             slotId: selectedSlot,
-            bookingDate: new Date()
+            bookingDate: new Date(),
+            equipmentCount: selectedEquipmentCount
         };
-        await bookFacilitySlot(requestBody).then(() => {
-            this.setState({selectedSport: 0, selectedFacility: 0, selectedSlot: 0, actionSuccess: true, enteredNetId: ""});
-            resetslotsForFacility();
-            resetFacilitiesForSport();
+        await bookEquipmentSlot(requestBody).then(() => {
+            this.setState({selectedSport: 0, selectedEquipment: 0, selectedSlot: 0, selectedEquipmentCount: 0, actionSuccess: true, enteredNetId: ""});
+            resetslotsForEquipment();
+            resetEquipmentsForSport();
         });
     };
 
@@ -181,23 +200,22 @@ export class FacilitiesBooking extends PureComponent{
     };
 
     enableSubmitButton = () => {
-        const { selectedFacility, selectedDate, selectedSlot } = this.state;
-        return selectedFacility>0 && selectedDate && selectedSlot>0;
+        const { selectedEquipment, selectedDate, selectedSlot, selectedEquipmentCount, enteredNetId } = this.state;
+        return selectedEquipment>0 && selectedDate && selectedSlot>0 && selectedEquipmentCount>0 && enteredNetId;
     };
 
-
     render(){
-        const { allSports, facilitiesForSport, slotsForFacility, loggedInUserRole } = this.props;
+        const { allSports, equipmentsForSport, slotsForEquipment, loggedInUserRole } = this.props;
         const { selectedDate, actionSuccess, enteredNetId } = this.state;
         return (
             <div>
                 <ThemeProvider theme={theme}>
-                    <Container id="facility-booking-container" component="main" maxWidth="xs">
+                    <Container id="equipment-booking-container" component="main" maxWidth="xs">
                         <CssBaseline/>
                         <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
                             <Paper elevation={10} style={paperStyle}>
                                 <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
-                                    <Typography component="h1" variant="h5">Book Facility</Typography>
+                                    <Typography component="h1" variant="h5">Book Equipment</Typography>
                                     <Box onSubmit={this.handleSubmit} component="form" sx={{ mt: 1 }}>
                                         <TextField
                                             margin="normal"
@@ -206,16 +224,16 @@ export class FacilitiesBooking extends PureComponent{
                                             name="bookingDate"
                                             label="Booking Date"
                                             type="date"
-                                            id="facility-booking-date"
+                                            id="equipment-booking-date"
                                             autoComplete="Booking Date"
                                             value={selectedDate}
                                             onChange={(e) => this.onDateChange(e)}
                                             InputLabelProps={{ shrink: true }}
                                         />
-                                        {loggedInUserRole && loggedInUserRole==="Administrator" && <TextField fullWidth id="netdid-facility-booking" label="NetId" variant="outlined" value={enteredNetId} onChange={this.handleNetIdChange}/>}
+                                        {loggedInUserRole && loggedInUserRole==="Administrator" && <TextField fullWidth id="netdid-equipment-booking" label="NetId" variant="outlined" value={enteredNetId} onChange={this.handleNetIdChange}/>}
                                         {allSports && allSports.length>0 && this.getAllSportsOption()}
-                                        {facilitiesForSport && facilitiesForSport.length>0 && this.getFacilitiesForSportOption()}
-                                        {slotsForFacility && slotsForFacility.length>0 && this.getSlotsForFacilityOption()}
+                                        {equipmentsForSport && equipmentsForSport.length>0 && this.getEquipmentsForSportOption()}
+                                        {slotsForEquipment && slotsForEquipment.length>0 && this.getSlotsForEquipmentOption()}
                                         {<Button
                                             id="submitSlotBookingBtn"
                                             type="submit"
@@ -226,7 +244,7 @@ export class FacilitiesBooking extends PureComponent{
                                     </Box>
                                     {
                                         actionSuccess &&
-                                        <Alert onClose={this.onAlertClose} id="slot-booking-success-alert" severity="success">Slot Booking Successful</Alert>
+                                        <Alert onClose={this.onAlertClose} id="equipment-booking-success-alert" severity="success">Equipment Booking Successful</Alert>
                                     }
                                 </Box>
                             </Paper>
@@ -237,29 +255,27 @@ export class FacilitiesBooking extends PureComponent{
             </div>
         );
     };
-
 };
-
 
 const mapStateToProps = (state) => {
     return {
         netid: state.netid,
         loggedInUserRole: state.loggedInUserRole,
         allSports: state.allSports,
-        facilitiesForSport: state.facilitiesForSport,
-        slotsForFacility: state.slotsForFacility
+        equipmentsForSport: state.equipmentsForSport,
+        slotsForEquipment: state.slotsForEquipment
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         getAllSports: async () => dispatch(await getAllSports()),
-        getFacilitiesForSport: async (sportId) => dispatch(await getFacilitiesForSport(sportId)),
-        resetFacilitiesForSport: () => dispatch(resetFacilitiesForSport()),
-        getSlotsForFacility: async (facilityId, date) => dispatch(await getSlotsForFacility(facilityId, date)),
-        resetslotsForFacility: () => dispatch(resetslotsForFacility()),
-        bookFacilitySlot: async (requestBody) => dispatch(await bookFacilitySlot(requestBody))
+        getEquipmentsForSport: async (sportId) => dispatch(await getEquipmentsForSport(sportId)),
+        resetEquipmentsForSport: () => dispatch(resetEquipmentsForSport()),
+        getSlotsForEquipment: async (equipmentId, date) => dispatch(await getSlotsForEquipment(equipmentId, date)),
+        resetslotsForEquipment: () => dispatch(resetslotsForEquipment()),
+        bookEquipmentSlot: async (requestBody) => dispatch(await bookEquipmentSlot(requestBody))
     };
 };
   
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(FacilitiesBooking));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EquipmentBooking));

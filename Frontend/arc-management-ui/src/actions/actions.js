@@ -53,7 +53,6 @@ export function fetchingProgress(isFetchingProgress) {
 };
 
 export function loginCreds(netid, password) {
-    console.log("(netid, password): (", netid, ", ", password, ")");
     return {
         type: "LOGIN_CREDS",
         payload_netid: netid,
@@ -102,13 +101,53 @@ export async function getSlotsForFacility(facilityId, date){
 
 export function resetslotsForFacility() {
     return {
-        type: "RESET_FETCHED_SLOTS"
+        type: "RESET_FETCHED_FACILITY_SLOTS"
     }
 };
 
 export function bookFacilitySlot(requestBody) {
     return {
         type: "BOOK_FACILITY_SLOT"
+    };
+};
+
+export async function getEquipmentsForSport(sportId){
+    const mockEquipments = [
+        {equipmentId: 1, equipmentName: "Badminton Racquet"},
+        {equipmentId: 2, equipmentName: "Badminton Shuttle"},
+    ];
+    return {
+        type: "EQUIPMENT_FOR_SPORT_FETCH",
+        payload: mockEquipments  
+    }
+};
+
+export function resetEquipmentsForSport() {
+    return {
+        type: "RESET_FETCHED_EQUIPMENTS"
+    }
+};
+
+export async function getSlotsForEquipment(equipmentId, date){
+    const mockSlots = [
+        {slotId: 1, slot: "12:00 to 13:00"},
+        {slotId: 2, slot: "15:00 to 16:00"}
+    ];
+    return {
+        type: "SLOTS_FOR_EQUIPMENT_FETCH",
+        payload: mockSlots  
+    };
+};
+
+export function resetslotsForEquipment() {
+    return {
+        type: "RESET_FETCHED_EQUIPMENT_SLOTS"
+    }
+};
+
+export function bookEquipmentSlot(requestBody) {
+    return {
+        type: "BOOK_EQUIPMENT_SLOT"
     };
 };
 

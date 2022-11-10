@@ -37,7 +37,6 @@ export class AdminHome extends PureComponent{
     }
 
     onClick = e => {
-        console.log(e.target.name);
         // debugger;
         alert("Clicked on- " + e.target.name);
     };

@@ -10,7 +10,8 @@ const initialState = {
     facilitiesForSport: [],
     slotsForFacility: [],
     equipmentsForSport: [],
-    slotsForEquipment: []
+    slotsForEquipment: [],
+    advQuery2Results: []
   }
   
   // Use the initialState as a default value
@@ -91,10 +92,15 @@ const initialState = {
           ...state,
           slotsForEquipment: []
         };
-        case "ADV_QUERY_1_RESULTS":
+      case "ADV_QUERY_1_RESULTS":
         return {
           ...state,
           advQuery1Results: action.payload
+        }
+      case "ADV_QUERY_2_RESULTS":
+        return {
+          ...state,
+          advQuery2Results: action.payload
         }
       default:
         // If this reducer doesn't recognize the action type, or doesn't

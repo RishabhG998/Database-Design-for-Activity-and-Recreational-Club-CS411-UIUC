@@ -33,3 +33,11 @@ export function getSlotsForFacilityCall(facilityId, date){
 export function bookFacilitySlotCall(requestBody){
     return axios.post(`${baseUrl}/slots/book_slot`, requestBody, { headers: requestHeader });
 };
+
+export function getSportsStats(sportId){
+    return axios.get(`${baseUrl}/adv_query/sport_statistics?sport_id=${sportId}&start_date=2022-08-22&end_date=2022-10-22`);
+}
+
+export function getProfitableEvents(){
+    return axios.get(`${baseUrl}/adv_query/profitable_events`);
+}

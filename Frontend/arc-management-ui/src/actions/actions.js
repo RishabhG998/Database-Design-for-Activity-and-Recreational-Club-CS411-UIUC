@@ -5,7 +5,9 @@ import {
     getAllSportsCall, 
     getFacilitesForSportCall, 
     getSlotsForFacilityCall,
-    bookFacilitySlotCall } from "../services/services";
+    bookFacilitySlotCall,
+    getSportsStats,
+    getProfitableEvents } from "../services/services";
 
 export async function  getUserInfo(netId) {
     return getUserInfoCall(netId).then((response) => {
@@ -180,18 +182,36 @@ export function bookEquipmentSlot(requestBody) {
     };
 };
 
-export function getAdvQuery1Results() {
-    const mockQuery1Results = [
-        { userName: "Saket", timeSpent: "22" },
-        { userName: "Rishabh", timeSpent: "100" },
-        { userName: "Chinmay", timeSpent: "80" },
-        { userName: "Kedar", timeSpent: "80" },
-        { userName: "Bruce", timeSpent: "78" },
-    ];
-    return {
-        type: "ADV_QUERY_1_RESULTS",
-        payload: mockQuery1Results
-    };
+export function getAdvQuery1Results(sportId) {
+    return getSportsStats(sportId).then((response) => {
+        const stats = response.data;
+        const formattedStats = stats.map(stat => {
+            return {
+                userName: stat.NET_ID,
+                timeSpent: stat.TOTAL_HOURS_SPENT
+            }
+        });
+        return {
+            type: "ADV_QUERY_1_RESULTS",
+            payload: formattedStats
+        };
+    });
+};
+
+export function getAdvQuery2Results() {
+    return getProfitableEvents().then((response) => {
+        const stats = response.data;
+        const formattedStats = stats.map(stat => {
+            return {
+                eventName: stat.event_name,
+                amountReceived: stat.total_val
+            }
+        });
+        return {
+            type: "ADV_QUERY_2_RESULTS",
+            payload: formattedStats
+        };
+    });
 };
 
 // date: yyyy-mm-dd

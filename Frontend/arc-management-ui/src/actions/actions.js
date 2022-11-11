@@ -1,4 +1,11 @@
-import { getUserInfoCall, updateUserInfoCall, deleteUserCall } from "../services/services";
+import { 
+    getUserInfoCall, 
+    updateUserInfoCall, 
+    deleteUserCall, 
+    getAllSportsCall, 
+    getFacilitesForSportCall, 
+    getSlotsForFacilityCall,
+    bookFacilitySlotCall } from "../services/services";
 
 export async function  getUserInfo(netId) {
     return getUserInfoCall(netId).then((response) => {
@@ -66,25 +73,29 @@ export function userLogin(netid, password) {
 };
 
 export async function getAllSports(){
-    const mockSports = [
-        {sportId: 1, sportName: "BasketBall"},
-        {sportId: 2, sportName: "Badminton"},
-    ]; 
-    return {
-        type: "ALL_SPORTS_FETCH",
-        payload: mockSports  
-    }
+    return getAllSportsCall().then((response) => {
+        const allSports = response.data;
+        const transformedSports = allSports && allSports.length>0 && allSports.map(sport => {
+            return { sportId: sport.sport_id, sportName: sport.sport_name }
+        });
+        return {
+            type: "ALL_SPORTS_FETCH",
+            payload: transformedSports  
+        }
+    });    
 };
 
 export async function getFacilitiesForSport(sportId){
-    const mockFacilities = [
-        {facilityId: 1, facilityName: "BasketBall Court 1"},
-        {facilityId: 2, facilityName: "BasketBall Court 2"},
-    ];
-    return {
-        type: "FACILITES_FOR_SPORT_FETCH",
-        payload: mockFacilities  
-    }
+    return getFacilitesForSportCall(sportId).then((response) => {
+        const allFacilitiesOfSport = response.data;
+        const transformedFacilites = allFacilitiesOfSport && allFacilitiesOfSport.length>0 && allFacilitiesOfSport.map(facility =>{
+            return { facilityId: facility.facility_id, facilityName: facility.facility_name };
+        });
+        return {
+            type: "FACILITES_FOR_SPORT_FETCH",
+            payload: transformedFacilites  
+        }
+    });    
 };
 
 export function resetFacilitiesForSport() {
@@ -94,14 +105,19 @@ export function resetFacilitiesForSport() {
 };
 
 export async function getSlotsForFacility(facilityId, date){
-    const mockSlots = [
-        {slotId: 1, slot: "12:00 to 13:00"},
-        {slotId: 2, slot: "15:00 to 16:00"},
-    ];
-    return {
-        type: "SLOTS_FOR_FACILITY_FETCH",
-        payload: mockSlots  
-    };
+    return getSlotsForFacilityCall(facilityId, date).then((response) => {
+        const allSlotsForFacility = response.data;
+        const transformedSlots = allSlotsForFacility && allSlotsForFacility.length>0 && allSlotsForFacility.map(slot => {
+            return {
+                slotId: slot["available_slot_id"],
+                slot: slot["start_time"] + " to " + slot["end_time"]
+            }
+        });
+        return {
+            type: "SLOTS_FOR_FACILITY_FETCH",
+            payload: transformedSlots  
+        };
+    }); 
 };
 
 export function resetslotsForFacility() {
@@ -111,9 +127,17 @@ export function resetslotsForFacility() {
 };
 
 export function bookFacilitySlot(requestBody) {
-    return {
-        type: "BOOK_FACILITY_SLOT"
+    const reqBody = {
+        net_id: requestBody.netId,
+        facility_id : requestBody.facilityId,
+        slot_id : requestBody.slotId,
+        booking_date: (new Date()).toJSON().substring(0,10)
     };
+    return bookFacilitySlotCall(reqBody).then((response) => {
+        return {
+            type: "BOOK_FACILITY_SLOT"
+        };
+    }); 
 };
 
 export async function getEquipmentsForSport(sportId){

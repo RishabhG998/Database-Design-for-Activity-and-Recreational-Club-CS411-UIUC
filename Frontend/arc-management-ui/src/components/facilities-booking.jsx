@@ -39,7 +39,7 @@ export class FacilitiesBooking extends PureComponent{
           selectedFacility: 0,
           selectedDate: (new Date()).toJSON().substring(0,10),
           selectedSlot: 0,
-          enteredNetId: props.netid
+          enteredNetId: props.loggedInUserRole && props.loggedInUserRole==="Administrator" ? "" : props.netid,
         };
     }
 

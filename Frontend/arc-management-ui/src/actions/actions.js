@@ -7,7 +7,10 @@ import {
     getSlotsForFacilityCall,
     bookFacilitySlotCall,
     getSportsStats,
-    getProfitableEvents } from "../services/services";
+    getProfitableEvents,
+    getEquipmentsForSportCall,
+    getAllAvailableSlots,
+    bookEquipmentSlotCall } from "../services/services";
 
 export async function  getUserInfo(netId) {
     return getUserInfoCall(netId).then((response) => {
@@ -143,14 +146,16 @@ export function bookFacilitySlot(requestBody) {
 };
 
 export async function getEquipmentsForSport(sportId){
-    const mockEquipments = [
-        {equipmentId: 1, equipmentName: "Badminton Racquet"},
-        {equipmentId: 2, equipmentName: "Badminton Shuttle"},
-    ];
-    return {
-        type: "EQUIPMENT_FOR_SPORT_FETCH",
-        payload: mockEquipments  
-    }
+    return getEquipmentsForSportCall(sportId).then((response) => {
+        const allEquipmentsOfSport = response.data;
+        const transformedEquipments = allEquipmentsOfSport && allEquipmentsOfSport.length>0 && allEquipmentsOfSport.map(equipment =>{
+            return { equipmentId: equipment.equipment_id, equipmentName: equipment.equipment_name };
+        });
+        return {
+            type: "EQUIPMENT_FOR_SPORT_FETCH",
+            payload: transformedEquipments  
+        }
+    }); 
 };
 
 export function resetEquipmentsForSport() {
@@ -159,15 +164,20 @@ export function resetEquipmentsForSport() {
     }
 };
 
-export async function getSlotsForEquipment(equipmentId, date){
-    const mockSlots = [
-        {slotId: 1, slot: "12:00 to 13:00"},
-        {slotId: 2, slot: "15:00 to 16:00"}
-    ];
-    return {
-        type: "SLOTS_FOR_EQUIPMENT_FETCH",
-        payload: mockSlots  
-    };
+export async function getSlotsForEquipment(date){
+    return getAllAvailableSlots(date).then((response) => {
+        const allSlotsForDate = response.data;
+        const transformedSlots = allSlotsForDate && allSlotsForDate.length>0 && allSlotsForDate.map(slot => {
+            return {
+                slotId: slot["available_slot_id"],
+                slot: slot["start_time"] + " to " + slot["end_time"]
+            }
+        });
+        return {
+            type: "SLOTS_FOR_EQUIPMENT_FETCH",
+            payload: transformedSlots  
+        };
+    });
 };
 
 export function resetslotsForEquipment() {
@@ -177,9 +187,18 @@ export function resetslotsForEquipment() {
 };
 
 export function bookEquipmentSlot(requestBody) {
-    return {
-        type: "BOOK_EQUIPMENT_SLOT"
+    const reqBody = {
+        net_id: requestBody.netId,
+        equipment_id : requestBody.equipmentId,
+        slot_id : requestBody.slotId.toString(),
+        rent_date : (new Date()).toJSON().substring(0,10),
+        equipment_count: parseInt(requestBody.equipmentCount)
     };
+    return bookEquipmentSlotCall(reqBody).then((response) => {
+        return {
+            type: "BOOK_EQUIPMENT_SLOT"
+        };
+    }); 
 };
 
 export function getAdvQuery1Results(sportId) {

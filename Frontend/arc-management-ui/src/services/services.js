@@ -36,8 +36,20 @@ export function bookFacilitySlotCall(requestBody){
 
 export function getSportsStats(sportId){
     return axios.get(`${baseUrl}/adv_query/sport_statistics?sport_id=${sportId}&start_date=2022-08-22&end_date=2022-10-22`);
-}
+};
 
 export function getProfitableEvents(){
     return axios.get(`${baseUrl}/adv_query/profitable_events`);
-}
+};
+
+export function getEquipmentsForSportCall(sportId){
+    return axios.get(`${baseUrl}/equipments/equipment?equipment_id=-1&sport_id=${sportId}&regex_check=false`, { headers: requestHeader });
+};
+
+export function getAllAvailableSlots(date){
+    return axios.get(`${baseUrl}/slots/available_slots/${date}`, { headers: requestHeader });    
+};
+
+export function bookEquipmentSlotCall(requestBody){
+    return axios.post(`${baseUrl}/equipmentbookings/equipmentbooking`, requestBody, { headers: requestHeader });
+};

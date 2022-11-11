@@ -120,7 +120,7 @@ export class EquipmentBooking extends PureComponent{
         const selectedEquipment = e.target.value;
         this.setState({selectedEquipment: selectedEquipment,  selectedSlot: 0, selectedEquipmentCount: 0});
         if(selectedEquipment > 0 && !!selectedDate){
-            await getSlotsForEquipment(selectedEquipment, selectedDate);
+            await getSlotsForEquipment(selectedDate);
         }
         else{
             resetslotsForEquipment();
@@ -272,7 +272,7 @@ const mapDispatchToProps = (dispatch) => {
         getAllSports: async () => dispatch(await getAllSports()),
         getEquipmentsForSport: async (sportId) => dispatch(await getEquipmentsForSport(sportId)),
         resetEquipmentsForSport: () => dispatch(resetEquipmentsForSport()),
-        getSlotsForEquipment: async (equipmentId, date) => dispatch(await getSlotsForEquipment(equipmentId, date)),
+        getSlotsForEquipment: async (date) => dispatch(await getSlotsForEquipment(date)),
         resetslotsForEquipment: () => dispatch(resetslotsForEquipment()),
         bookEquipmentSlot: async (requestBody) => dispatch(await bookEquipmentSlot(requestBody))
     };

@@ -731,8 +731,7 @@ def get_sport_statistics(sport_id, start_date, end_date):
                 FROM slotbookings s JOIN Facilities f USING(FACILITY_ID) JOIN sports sp USING(SPORT_ID)
                 WHERE s.BOOKING_DATE BETWEEN '{start_date}' AND '{end_date}' AND sp.sport_id = {sport_id}
                 GROUP BY sp.SPORT_NAME, s.NET_ID
-                ORDER BY TOTAL_HOURS_SPENT DESC
-                LIMIT 5;'''
+                ORDER BY TOTAL_HOURS_SPENT DESC LIMIT 5;'''
     result, error = run_query(query, return_data = True, get_columns=True)
     if not error:
         if result != []:

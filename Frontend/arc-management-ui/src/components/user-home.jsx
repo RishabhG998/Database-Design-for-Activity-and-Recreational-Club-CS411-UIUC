@@ -39,6 +39,16 @@ export class UserHome extends PureComponent{
     onClick = e => {
         // debugger;
         alert("Clicked on- " + e.target.name);
+
+        if (e.target.name === 'equipment_renting_card') {
+            this.props.navigate('/equipmentBooking');
+        }
+        else if (e.target.name === 'facilities_booking_card') {
+            this.props.navigate('/facilityBooking');
+        }
+        else if (e.target.name === 'event_booking_card') {
+            // this.props.navigate('/showStats');
+        } 
     };
 
 

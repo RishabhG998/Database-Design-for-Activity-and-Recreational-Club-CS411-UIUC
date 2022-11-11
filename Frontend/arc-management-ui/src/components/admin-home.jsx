@@ -14,6 +14,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Box, Card, CardActions, CardContent, CardMedia, Container, Grid, Typography, Link } from "@mui/material";
 // import FaceIcon from '@mui/icons-material/Face';
 import SendIcon from '@mui/icons-material/Send';
+import { act } from "react-dom/test-utils";
 
 const theme = createTheme();
 
@@ -39,10 +40,40 @@ export class AdminHome extends PureComponent{
     onClick = e => {
         // debugger;
         alert("Clicked on- " + e.target.name);
+        // var action_type = e.target.name;
+        
+        if (e.target.name === 'see_stats_card') {
+            this.props.navigate('/showStats');
+        }
+        else if (e.target.name === 'edit_user') {
+            this.props.navigate('/editUser');
+        }
+        else if (e.target.name === 'equipments_card') {
+            // this.props.navigate('/showStats');
+        } 
+        else if (e.target.name === 'facilities_card') {
+            // this.props.navigate('/showStats');
+        } 
+        else if (e.target.name === 'equipments_card') {
+            // this.props.navigate('/showStats');
+        } 
+        else if (e.target.name === 'equipment_renting_card') {
+            this.props.navigate('/equipmentBooking');
+        } 
+        else if (e.target.name === 'facilities_booking_card') {
+            this.props.navigate('/facilityBooking');
+        }
+        else if (e.target.name === 'event_card') {
+            this.props.navigate('/createEvent');
+        }
+        else {
+            alert("No such page exists!");
+        }
     };
 
 
     render() {
+
         return (
             <div>
                 {/* <Box sx={{ bgcolor: 'background.paper', pt: 8, pb: 6, }}>
@@ -97,14 +128,14 @@ export class AdminHome extends PureComponent{
                                 />
                                 <CardContent sx={{ flexGrow: 1 }}> 
                                     <Typography gutterBottom variant="h5" component="h2">
-                                    Supervisors
+                                    Edit Users
                                     </Typography>
                                     {/* <Typography>
                                     Click here manage Supervisors
                                     </Typography> */}
                                 </CardContent>
                             <CardActions sx={{ height: '100%', display: 'flex', flexDirection: 'column' }} >
-                                <Button sx={{alignItems: "center", justifyContent: "center", marginBottom: "21%"}} name="supervisors_card" size="small" onClick={this.onClick} variant="outlined" endIcon={<SendIcon/>}>View</Button>
+                                <Button sx={{alignItems: "center", justifyContent: "center", marginBottom: "21%"}} name="edit_user" size="small" onClick={this.onClick} variant="outlined" endIcon={<SendIcon/>}>View</Button>
                                 {/* <Button size="small">Edit</Button> */}
                             </CardActions>
                             </Card> 

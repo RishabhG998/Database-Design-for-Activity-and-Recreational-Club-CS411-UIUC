@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS SlotBookings (
         REFERENCES Facilities (facility_id)
         ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (slot_id)
-        REFERENCES AvailableSlots (available_slot_id)
+        REFERENCES AvailableSlots (slot_id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 

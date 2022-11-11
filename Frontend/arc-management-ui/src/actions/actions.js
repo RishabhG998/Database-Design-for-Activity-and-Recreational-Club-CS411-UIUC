@@ -1,42 +1,44 @@
-export function userNameChange(userName) {
-    return {
-        type: "USER_NAME_CHANGE",
-        payload: userName
-    }
-};
-
-export function setLoggedInUserRole(role) {
-    return {
-        type: "SET_USER_ROLE",
-        payload: role
-    }
-};
+import { getUserInfoCall, updateUserInfoCall, deleteUserCall } from "../services/services";
 
 export async function  getUserInfo(netId) {
-    const mockUserInfo = {
-        netId: netId,
-        name: "kedar",
-        roleID: 1,
-        contactNumber: "4534787964",
-        emailID: "kedar@uiuc.edu",
-        dob: "1997-10-26"
-    };
-    return {
-        type: "USER_INFO_FETCH",
-        payload: mockUserInfo
-    };
+    return getUserInfoCall(netId).then((response) => {
+        const userData = response.data;
+        return {
+            type: "USER_INFO_FETCH",
+            payload: {
+                netId: userData["net_id"],
+                name: userData["name"],
+                roleID: userData["role_id"],
+                contactNumber: userData["contact_number"],
+                emailID: userData["email_id"],
+                dob: userData["date_of_birth"]
+            }
+        }
+    });
 };
 
-export function updateUserInfo(userInfo) {
-    return {
-        type: "USER_INFO_UPDATE"
+export async function updateUserInfo(userInfo) {
+    const requestBody = {
+        "net_id": userInfo.netId,
+        "name": userInfo.name,
+        "contact_number": userInfo.contactNumber,
+        "email_id": userInfo.emailID,
+        "date_of_birth": userInfo.dob.toString(),
+        "role_id": userInfo.roleID.toString()
     };
+    return updateUserInfoCall(requestBody).then((response) => {
+        return {
+            type: "USER_INFO_UPDATE"
+        }
+    });   
 };
 
-export function deleteUser() {
-    return {
-        type: "USER_DELETE"
-    };
+export function deleteUser(netId) {
+    return deleteUserCall(netId).then((response) => {
+        return {
+            type: "USER_DELETE"
+        }
+    });
 };
 
 export function resetUserInfo() {
@@ -52,12 +54,15 @@ export function fetchingProgress(isFetchingProgress) {
     }
 };
 
-export function loginCreds(netid, password) {
-    return {
-        type: "LOGIN_CREDS",
-        payload_netid: netid,
-        payload_password: password
-    }
+export function userLogin(netid, password) {
+    return getUserInfoCall(netid).then((response) => {
+        const userData = response.data;
+        const roleName = userData["role_name"];
+        return {
+            type: "SET_USER_ROLE",
+            payload: {roleName, netid}
+        }
+    });
 };
 
 export async function getAllSports(){

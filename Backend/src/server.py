@@ -4,7 +4,7 @@ from flask import Flask
 
 from flask_compress import Compress
 from flask_restx import Resource
-
+from flask_cors import CORS
 from .apis import api
 
 log = logging.getLogger()
@@ -13,6 +13,7 @@ logging.basicConfig(level=logging.INFO)
 APP_PATH = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask('arc-management-api')
+cors = CORS(app)
 Compress(app)
 api.init_app(app)
 

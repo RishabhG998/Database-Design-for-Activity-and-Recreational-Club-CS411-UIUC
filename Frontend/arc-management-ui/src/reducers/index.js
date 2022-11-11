@@ -1,8 +1,6 @@
 const initialState = {
-    user: null,
     loggedInUserRole: null,
     netid: null,
-    password: null,
     selectedFacility: null,
     selectedSport: null,
     fetchingProgressStatus: false,
@@ -19,21 +17,11 @@ const initialState = {
   export default (state = initialState, action) => {
     // The reducer normally looks at the action type field to decide what happens
     switch (action.type) {
-      case "USER_NAME_CHANGE":
-        return {
-          ...state,
-          user: action.payload
-        };
       case "SET_USER_ROLE":
         return {
           ...state,
-          loggedInUserRole: action.payload
-        };
-      case "LOGIN_CREDS":
-        return {
-          ...state,
-          netid: action.payload_netid,
-          password: action.payload_password
+          loggedInUserRole: action.payload.roleName,
+          netid: action.payload.netid
         };
       case "FETCHING_STATUS_CHANGE":
         return {
@@ -49,6 +37,14 @@ const initialState = {
         return {
           ...state,
           userInfo: null
+        };
+      case "USER_INFO_UPDATE":
+        return {
+          ...state
+        };
+      case "USER_DELETE":
+        return {
+          ...state
         };
       case "ALL_SPORTS_FETCH":
         return {

@@ -112,7 +112,8 @@ export class EditUser extends PureComponent{
         }
     };
 
-    handleSubmit = async () => {
+    handleSubmit = (e) => {
+        e.preventDefault();
         const { updateUserInfo, resetUserInfo, userInfo } = this.props;
         const { updatedName, updatedEmail, updatedContactNo, updatedDoB, updatedRole } = this.state;
         const requestBody = {
@@ -122,17 +123,17 @@ export class EditUser extends PureComponent{
             contactNumber: updatedContactNo,
             emailID: updatedEmail,
             dob: updatedDoB
-        };
-        await updateUserInfo(requestBody).then(() => {
+        }; 
+        updateUserInfo(requestBody).then(() => {
             this.setState({enteredNetId: "", actionSuccess: true});
             resetUserInfo();
-
         });
     };
 
-    handleDeleteUser = async () => {
+    handleDeleteUser = (e) => {
+        e.preventDefault();
         const { userInfo, resetUserInfo, deleteUser } = this.props;
-        await deleteUser(userInfo.netId).then(() => {
+        deleteUser(userInfo.netId).then(() => {
             this.setState({enteredNetId: "", actionSuccess: true});
             resetUserInfo();
         });
@@ -221,7 +222,7 @@ export class EditUser extends PureComponent{
                                                 fullWidth
                                                 variant="contained"
                                                 color="error"
-                                                sx={{ mt: 3, mb: 2, marginBottom: 5 }} onClick={this.onUserDelete}>Delete User</Button>
+                                                sx={{ mt: 3, mb: 2, marginBottom: 5 }} onClick={this.handleDeleteUser}>Delete User</Button>
                                             </Box>
                                     }
                                     {

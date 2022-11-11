@@ -1,13 +1,12 @@
 import { PureComponent } from "react";
 import Button from '@mui/material/Button';
 import {withRouter} from './common/withRouter';
-import { userNameChange, loginCreds, setLoggedInUserRole } from '../actions/actions';
+import { userLogin} from '../actions/actions';
 import { connect } from 'react-redux'
 import React from "react";
-import { CssBaseline, Grid, Paper, Box, Avatar, Typography, TextField, FormControlLabel, Checkbox, Link } from "@mui/material";
+import { CssBaseline, Paper, Box, Avatar, Typography, TextField, FormControlLabel, Checkbox, Link } from "@mui/material";
 import { Container } from "@mui/system";
 import AccountBoxTwoTone from '@mui/icons-material/AccountBoxTwoTone';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const theme = createTheme({
@@ -30,6 +29,7 @@ function Copyright(props) {
     </Typography>
   );
 }
+const paperStyle = {padding : 20, alignItems: 'center',};
 
 export class Login extends PureComponent{
 
@@ -38,24 +38,17 @@ export class Login extends PureComponent{
       this.state = {
         stateNid: "",
         statePass: ""
-    };
+      };
     }
 
-    navigateToUser = () => {
-      this.props.navigate('/userHome');
-    };
-  
-    navigateToAdmin = () => {
-      this.props.navigate('/adminHome');
-    };
-
     handleSubmit = e => {
-      const { setLoggedInUserRole, loginCreds } = this.props;
+      const { userLogin, navigate } = this.props;
       const { stateNid, statePass } = this.state;
       e.preventDefault();
-      loginCreds(stateNid, statePass);
-      setLoggedInUserRole("Administrator");
-      this.props.navigate('/equipmentBooking');
+      userLogin(stateNid, statePass).then(() => {
+        const { loggedInUserRole } = this.props;
+        loggedInUserRole === "Administrator" ? navigate('/adminHome') : navigate('/userHome'); 
+      });
   }
 
   onChange = e => {
@@ -66,18 +59,9 @@ export class Login extends PureComponent{
   }
     
     render(){
-        const { user, userNameChange, netid, password, loginCreds } = this.props;
-
-        const paperStyle = {padding : 20, alignItems: 'center',};
-
+        
         return(
             <div className="main-content">
-                {/* <Button onClick={() => userNameChange("chinmay")}>Add My Name</Button> */}
-                <Button onClick={this.navigateToUser}>User Screen</Button>
-                <Button onClick={this.navigateToAdmin}>Admin Screen</Button>
-                <p>{user}</p>
-                <p>{netid}</p>
-                <div>
                 <ThemeProvider theme={theme}>
                     <Container component="main" maxWidth="xs">
                         <CssBaseline/>
@@ -85,7 +69,6 @@ export class Login extends PureComponent{
                             <Paper elevation={10} style={paperStyle}>
                                 <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
                                     <Typography variant="h4" align="center" color="textPrimary" gutterBottom>Welcome to ARC-MS</Typography>
-                                      {/* <FaceIcon sx={{ m: 1, bgcolor: 'orange' }}></FaceIcon> */}
                                     <Avatar sx={{ m: 1, bgcolor: 'orange' }}>
                                       <AccountBoxTwoTone/>
                                     </Avatar>
@@ -93,7 +76,6 @@ export class Login extends PureComponent{
                                         Sign in
                                     </Typography>
                                     <Box component="form" onSubmit={this.handleSubmit} noValidate sx={{ mt: 1 }}>
-                                    {/* <Box component="form" onSubmit={() => loginCreds("bwanye", "123")} noValidate sx={{ mt: 1 }}> */}
                                         <TextField
                                             margin="normal"
                                             required
@@ -118,10 +100,6 @@ export class Login extends PureComponent{
                                             value={this.state.statePass}
                                             onChange={this.onChange}
                                         />
-                                        {/* <FormControlLabel
-                                            control={<Checkbox value="remember" color="primary" />}
-                                            label="Remember me"
-                                        /> */}
                                         <Button
                                             type="submit"
                                             fullWidth
@@ -138,26 +116,21 @@ export class Login extends PureComponent{
                         <Copyright sx={{ mt: 8, mb: 4 }} />
                     </Container>
                 </ThemeProvider>
-            </div>
-            </div>
-            
+            </div> 
         );
     }
 };
 
 const mapStateToProps = (state) => {
   return {
-     user: state.user,
      netid: state.netid,
-     password: state.password
+     loggedInUserRole: state.loggedInUserRole
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    userNameChange: (name) => dispatch(userNameChange(name)),
-    loginCreds: (netid, password) => dispatch(loginCreds(netid, password)),
-    setLoggedInUserRole: (role) => dispatch(setLoggedInUserRole(role))
+    userLogin: async (stateNid, statePass) => dispatch(await userLogin(stateNid, statePass))
   };
 };
 

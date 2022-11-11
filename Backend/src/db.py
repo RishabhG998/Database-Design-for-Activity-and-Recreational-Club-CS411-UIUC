@@ -722,3 +722,67 @@ def get_available_slots(date):
         error_msg = error
         ret_code = 500
     return data, error_msg, ret_code
+
+
+
+def get_sport_statistics(sport_id, start_date, end_date):
+    data, error_msg, ret_code = None, None, 400
+    query = f'''SELECT sp.SPORT_NAME, s.NET_ID, COUNT(SLOT_ID) as TOTAL_HOURS_SPENT
+                FROM slotbookings s JOIN Facilities f USING(FACILITY_ID) JOIN sports sp USING(SPORT_ID)
+                WHERE s.BOOKING_DATE BETWEEN '{start_date}' AND '{end_date}' AND sp.sport_id = {sport_id}
+                GROUP BY sp.SPORT_NAME, s.NET_ID;'''
+    result, error = run_query(query, return_data = True, get_columns=True)
+    if not error:
+        if result != []:
+            data = []
+            for i in range(len(result)):
+                _result = {}
+                for j in range(len(result[i])):
+                    if result[i][j][0] == 'total_hours_spent':
+                        _result[result[i][j][0]] = str(result[i][j][1])
+                        continue
+                    _result[result[i][j][0]] = result[i][j][1]
+                data.append(_result)
+            ret_code = 200
+        else:
+            data = None
+            ret_code = 404
+    else:
+        data = None
+        error_msg = error
+        ret_code = 500
+    return data, error_msg, ret_code
+
+def get_profitable_events_by_revenue():
+    data, error_msg, ret_code = None, None, 400
+    query = f'''SELECT e.event_name, e.facility_id, SUM(eb.ticket_count * e.ticket_cost) as total_val
+                FROM eventbookings eb JOIN events e USING(EVENT_ID)
+                GROUP BY e.EVENT_ID
+                HAVING total_val > 0
+                ORDER BY total_val desc;'''
+    result, error = run_query(query, return_data = True)
+    if not error:
+        if result != []:
+            data = []
+            for i in range(len(result)):
+                _result = {}
+                for j in range(len(result[i])):
+                    if j == 0:
+                        _result['event_name'] = result[i][j]
+                        continue
+                    if j == 1:
+                        _result['facility_id'] = result[i][j]
+                        continue
+                    if j == 2:
+                        _result['total_val'] = result[i][j]
+                        continue
+                data.append(_result)
+            ret_code = 200
+        else:
+            data = None
+            ret_code = 404
+    else:
+        data = None
+        error_msg = error
+        ret_code = 500
+    return data, error_msg, ret_code

@@ -39,7 +39,7 @@ export class AdminHome extends PureComponent{
 
     onClick = e => {
         // debugger;
-        alert("Clicked on- " + e.target.name);
+        // alert("Clicked on- " + e.target.name);
         // var action_type = e.target.name;
         
         if (e.target.name === 'see_stats_card') {
@@ -50,12 +50,15 @@ export class AdminHome extends PureComponent{
         }
         else if (e.target.name === 'equipments_card') {
             // this.props.navigate('/showStats');
+            alert("Page in the works, coming soon...");
         } 
         else if (e.target.name === 'facilities_card') {
             // this.props.navigate('/showStats');
+            alert("Page in the works, coming soon...");
         } 
         else if (e.target.name === 'equipments_card') {
             // this.props.navigate('/showStats');
+            alert("Page in the works, coming soon...");
         } 
         else if (e.target.name === 'equipment_renting_card') {
             this.props.navigate('/equipmentBooking');

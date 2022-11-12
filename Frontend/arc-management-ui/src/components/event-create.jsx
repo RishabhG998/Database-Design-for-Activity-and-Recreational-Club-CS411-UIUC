@@ -53,7 +53,6 @@ export class CreateEvent extends PureComponent{
         fetchedSportsInfo: [],
         fetchedFacilityInfo: [],
         selectedFacility: 0,
-        // allSports: null,
         actionSuccess: false
       };
     }
@@ -195,7 +194,9 @@ export class CreateEvent extends PureComponent{
     };
 
     onAlertClose = () =>{
-        this.setState({actionSuccess: false});
+        this.setState({
+            actionSuccess: false
+        });
     };
 
     handleSubmit = (e) => {
@@ -218,8 +219,24 @@ export class CreateEvent extends PureComponent{
             'sport_id': selectedSport,
         }; 
         createEvent(requestBody).then(() => {
-            this.setState({ actionSuccess: true });
-            alert("Event with the name " + eventName + " is now created!");
+            this.setState({ 
+                actionSuccess: eventName 
+            });
+
+            this.setState({
+                eventName: "",
+                eventDescription: "",
+                eventCapacity: "",
+                ticketCost: "",
+                eventDate: new Date(),
+                eventStartTime: new Date(),
+                eventEndTime: new Date(),
+                selectedSport: 0,
+                facilityId: "",
+                fetchedSportsInfo: [],
+                fetchedFacilityInfo: [],
+                selectedFacility: 0,
+            });
         });
     };
 
@@ -332,6 +349,10 @@ export class CreateEvent extends PureComponent{
                                         </Button>
                                     </Box>                                     
                                 </Box>
+                                {
+                                    actionSuccess &&
+                                        <Alert onClose={this.onAlertClose} id="event-create-action-alert" severity="success">Event with the name "{ actionSuccess }" created successfully!</Alert>
+                                }
                             </Paper>
                         </Box>
                         <Copyright sx={{ mt: 8, mb: 4 }} />

@@ -38,7 +38,7 @@ export class UserHome extends PureComponent{
 
     onClick = e => {
         // debugger;
-        alert("Clicked on- " + e.target.name);
+        // alert("Clicked on- " + e.target.name);
 
         if (e.target.name === 'equipment_renting_card') {
             this.props.navigate('/equipmentBooking');
@@ -48,6 +48,7 @@ export class UserHome extends PureComponent{
         }
         else if (e.target.name === 'event_booking_card') {
             // this.props.navigate('/showStats');
+            alert("Page in the works, coming soon...");
         } 
     };
 

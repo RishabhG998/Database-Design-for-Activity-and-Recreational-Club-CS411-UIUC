@@ -11,7 +11,7 @@ DB_DIR = '../database'
 db_files = list(glob.glob(f'{DB_DIR}/*.sql'))
 DB = max(db_files, key=os.path.getctime)
 DB_USER = 'root'
-DB_PASS = 'roottoor'
+DB_PASS = 'root'
 DATETIME_STRING_FORMAT = f'%Y{main.DATE_SEPARATOR}%m{main.DATE_SEPARATOR}%d'
 
 def run_query(query, execute_many = False, get_status = False, return_data = False, get_columns = False):
@@ -731,7 +731,7 @@ def get_sport_statistics(sport_id, start_date, end_date):
                 FROM slotbookings s JOIN Facilities f USING(FACILITY_ID) JOIN sports sp USING(SPORT_ID)
                 WHERE s.BOOKING_DATE BETWEEN '{start_date}' AND '{end_date}' AND sp.sport_id = {sport_id}
                 GROUP BY sp.SPORT_NAME, s.NET_ID
-                ORDER BY TOTAL_HOURS_SPENT DESC;'''
+                ORDER BY TOTAL_HOURS_SPENT DESC LIMIT 5;'''
     result, error = run_query(query, return_data = True, get_columns=True)
     if not error:
         if result != []:
@@ -760,7 +760,8 @@ def get_profitable_events_by_revenue():
                 FROM eventbookings eb JOIN events e USING(EVENT_ID)
                 GROUP BY e.EVENT_ID
                 HAVING total_val > 0
-                ORDER BY total_val desc;'''
+                ORDER BY total_val desc
+                LIMIT 10;'''
     result, error = run_query(query, return_data = True)
     if not error:
         if result != []:

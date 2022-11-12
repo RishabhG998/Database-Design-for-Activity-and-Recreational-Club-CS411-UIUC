@@ -53,3 +53,8 @@ export function getAllAvailableSlots(date){
 export function bookEquipmentSlotCall(requestBody){
     return axios.post(`${baseUrl}/equipmentbookings/equipmentbooking`, requestBody, { headers: requestHeader });
 };
+
+export function createEventCall(requestBody){
+    return axios.post(`${baseUrl}/events/events`, requestBody , { headers: requestHeader});
+
+};

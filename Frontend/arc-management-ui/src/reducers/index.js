@@ -15,6 +15,7 @@ const initialState = {
   }
   
   // Use the initialState as a default value
+  // eslint-disable-next-line import/no-anonymous-default-export
   export default (state = initialState, action) => {
     // The reducer normally looks at the action type field to decide what happens
     switch (action.type) {
@@ -102,6 +103,10 @@ const initialState = {
           ...state,
           advQuery2Results: action.payload
         }
+        case "EVENT_CREATE":
+          return {
+            ...state
+          };
       default:
         // If this reducer doesn't recognize the action type, or doesn't
         // care about this specific action, return the existing state unchanged

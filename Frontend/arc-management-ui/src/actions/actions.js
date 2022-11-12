@@ -10,7 +10,8 @@ import {
     getProfitableEvents,
     getEquipmentsForSportCall,
     getAllAvailableSlots,
-    bookEquipmentSlotCall } from "../services/services";
+    bookEquipmentSlotCall,
+    createEventCall } from "../services/services";
 
 export async function  getUserInfo(netId) {
     return getUserInfoCall(netId).then((response) => {
@@ -231,6 +232,15 @@ export function getAdvQuery2Results() {
             payload: formattedStats
         };
     });
+};
+
+export async function createEvent(requestBody) {
+
+    return createEventCall(requestBody).then((response) => {
+        return {
+            type: "EVENT_CREATE"
+        }
+    });   
 };
 
 // date: yyyy-mm-dd

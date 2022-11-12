@@ -155,7 +155,7 @@ export class EditUser extends PureComponent{
                             <Paper elevation={10} style={paperStyle}>
                                 <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
                                     <Typography component="h1" variant="h5">Edit User</Typography>
-                                    <Box component="form" sx={{ mt: 1 }}>
+                                    <Box component="form" sx={{ mt: 1 }} onSubmit={this.handleSubmit}>
                                         <TextField id="netdid-textfield" label="NetId" variant="outlined" value={enteredNetId} onChange={this.handleNetIdChange}/>
                                         <Button id="getUserInfo" onClick={this.handleOnGetInfoClick} variant="contained">Get User Info</Button>
                                     </Box>

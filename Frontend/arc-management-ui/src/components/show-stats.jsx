@@ -150,7 +150,34 @@ export class ShowStats extends PureComponent {
                                 </Box> 
                             </Paper>
                         </Box>
-                        
+                        <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+                            <Paper elevation={10} style={paperStyle}>
+                                <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+                                    <Typography sx= {{ marginBottom: 3 }} component="h1" variant="h6">Query 2: Top 5 revenue earning Events</Typography>
+                                    <TableContainer component={Paper}>
+                                        <Table sx={{ minWidth: 500 }} aria-label="customized table">
+                                            <TableHead>
+                                            <TableRow>
+                                                <StyledTableCell align="center">Event Name</StyledTableCell>
+                                                <StyledTableCell align="center">Total Revenue</StyledTableCell>
+                                            </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                            {advQuery2Results && advQuery2Results.map((row) => (
+                                                <StyledTableRow key={row.eventName}>
+                                                <StyledTableCell align="center" component="th" scope="row">
+                                                    {row.eventName}
+                                                </StyledTableCell>
+                                                <StyledTableCell align="center">{row.totalRevenue}</StyledTableCell>
+                                                </StyledTableRow>
+                                            ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </Box>
+                                
+                            </Paper>
+                        </Box>
                     </Container>
                 </ThemeProvider>
             </div>

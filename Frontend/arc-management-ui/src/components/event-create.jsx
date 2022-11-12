@@ -5,13 +5,13 @@ import Button from '@mui/material/Button';
 import { Container } from "@mui/system";
 import { CssBaseline, Paper, Box, Typography, TextField, Link, FormControl, InputLabel, Select, MenuItem, Alert, Stack } from "@mui/material";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { getUserInfo, fetchingProgress, deleteUser, updateUserInfo, resetUserInfo, getAllSports, getFacilitiesForSport, getSlotsForFacility, resetslotsForFacility } from '../actions/actions';
+import { getUserInfo, fetchingProgress, deleteUser, updateUserInfo, resetUserInfo, getAllSports, getFacilitiesForSport, getSlotsForFacility, resetslotsForFacility, createEvent } from '../actions/actions';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import moment from 'moment';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import "./event-create.css";
+import { type } from "@testing-library/user-event/dist/type";
 
 const theme = createTheme({
     typography: {
@@ -153,6 +153,16 @@ export class CreateEvent extends PureComponent{
         }
     };
 
+    toHHMMSS = function (time) {
+        var date = new Date(time);
+
+        var hours = date.getHours().toString();
+        var minutes = date.getMinutes().toString();
+        var seconds = date.getSeconds().toString();
+
+        return hours+':'+minutes+':'+seconds;
+    }
+
     onChangeInputField = (e, type) => {
         // debugger;
         // console.log(e);
@@ -186,6 +196,31 @@ export class CreateEvent extends PureComponent{
 
     onAlertClose = () =>{
         this.setState({actionSuccess: false});
+    };
+
+    handleSubmit = (e) => {
+        e.preventDefault();
+        const { createEvent } = this.props;
+        const { eventName, eventDescription, eventCapacity, ticketCost, eventDate, eventStartTime, eventEndTime, selectedSport, selectedFacility, actionSuccess } = this.state;
+        
+        var temp_eventStartTime = this.toHHMMSS(eventStartTime);
+        var temp_eventEndTime = this.toHHMMSS(eventEndTime);
+
+        const requestBody = {
+            'event_name': eventName,
+            'event_description': eventDescription,
+            'event_capacity': parseInt(eventCapacity),
+            'ticket_cost': Number(ticketCost),
+            'event_date': (new Date(eventDate).toJSON().substring(0,10)),
+            'event_start_time': temp_eventStartTime,
+            'event_end_time': temp_eventEndTime,
+            'facility_id': selectedFacility,
+            'sport_id': selectedSport,
+        }; 
+        createEvent(requestBody).then(() => {
+            this.setState({ actionSuccess: true });
+            alert("Event with the name " + eventName + " is now created!");
+        });
     };
 
     render(){
@@ -270,6 +305,7 @@ export class CreateEvent extends PureComponent{
                                                 label="Event Start Time"
                                                 id="eventStartTime"
                                                 autoComplete="10:09 AM"
+                                                format="HH:mm"
                                                 value={this.state.eventStartTime}
                                                 onChange={(e) => this.onChangeInputField(e, "eventStartTime")}
                                                 renderInput={(params) => <TextField {...params} />}
@@ -327,6 +363,7 @@ const mapDispatchToProps = (dispatch) => {
         updateUserInfo: async (userInfo) => dispatch(updateUserInfo(userInfo)),
         getSlotsForFacility: async (facilityId, date) => dispatch(await getSlotsForFacility(facilityId, date)),
         resetslotsForFacility: () => dispatch(resetslotsForFacility()),
+        createEvent: async (requestBody) => dispatch(await createEvent(requestBody)),
         resetUserInfo: () => dispatch(resetUserInfo())
     };
   };

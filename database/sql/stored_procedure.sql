@@ -6,9 +6,14 @@ drop procedure if exists user_details;
 delimiter //
 create procedure user_details (IN id varchar(30))
 begin
-    select net_id, `name`, contact_number, email_id, date_of_birth, 
-		   role_id, role_name,role_description,facilities_used,slots_booked,events_booked,tickets_booked,equipment_count, total_rent from (
-	select * from (
+    create procedure user_details (IN id varchar(30))
+begin
+    select net_id, "name", contact_number, email_id, date_of_birth, 
+		   role_id, role_name,role_description,facilities_used,slots_booked,events_booked,tickets_booked,equipment_count, 
+           total_rent as total_equipment_rent,total_tickets_cost, (case when total_rent>0 then total_rent else 0 end) + total_tickets_cost as total_rent_paid from (
+    
+		select * from (
+		select * from (
 		select * from 
 		(select Users.*, Roles.role_name, Roles.role_description from Users left join Roles on Users.role_id = Roles.role_id where Users.net_id=id) 
 			as User_Role left join 
@@ -21,7 +26,10 @@ begin
                         
                         left join (select net_id as net_id_4,sum(ER.equipment_count) as equipment_count,sum(ER.equipment_count*equipment_rent_per_hour) as total_rent from EquipmentRentals ER left join Equipments E on ER.equipment_id=E.equipment_id
 								  where net_id=id
-								  group by net_id) as Equipment_Data on User_Role_Slot_Event.net_id=Equipment_Data.net_id_4;
+								  group by net_id) as Equipment_Data on User_Role_Slot_Event.net_id=Equipment_Data.net_id_4) as base_table left join 
+												(select EB.net_id as net_id_5 , count(distinct(E.event_id)) as total_events, sum(EB.ticket_count) as total_tickets ,sum( EB.ticket_count * E.ticket_cost)
+                                                as total_tickets_cost from Events E left join EventBookings EB on E.event_id=EB.event_id where EB.net_id=id group by EB.net_id) 
+                                                as Events_EB on base_table.net_id = Events_EB.net_id_5;
 end//
 
 delimiter ;

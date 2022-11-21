@@ -34,11 +34,9 @@ drop procedure if exists user_details;
 delimiter //
 create procedure user_details (IN id varchar(30))
 begin
-   create procedure user_details (IN id varchar(30))
-begin
     select net_id, "name", contact_number, email_id, date_of_birth, 
 		   role_id, role_name,role_description,facilities_used,slots_booked,events_booked,tickets_booked,equipment_count, 
-           total_rent as total_equipment_rent,total_tickets_cost, (case when total_rent>0 then total_rent else 0 end) + total_tickets_cost as total_rent_paid from (
+           total_rent as total_equipment_rent,total_tickets_cost, (case when total_rent>0 then total_rent else 0 end) + (case when total_tickets_cost>0 then total_tickets_cost else 0 end) as total_rent_paid from (
     
 		select * from (
 		select * from (
@@ -58,9 +56,10 @@ begin
 												(select EB.net_id as net_id_5 , count(distinct(E.event_id)) as total_events, sum(EB.ticket_count) as total_tickets ,sum( EB.ticket_count * E.ticket_cost)
                                                 as total_tickets_cost from Events E left join EventBookings EB on E.event_id=EB.event_id where EB.net_id=id group by EB.net_id) 
                                                 as Events_EB on base_table.net_id = Events_EB.net_id_5;
+						
 end//
 
 delimiter ;
-call user_details('gmanews');
+call user_details('barbroe');
 
 

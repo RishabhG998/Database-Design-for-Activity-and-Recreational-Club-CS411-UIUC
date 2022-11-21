@@ -33,3 +33,13 @@ class Q2(Resource):
         if error_msg:
             return {'error': error_msg}, ret_code
         return data, ret_code
+
+
+@ns.route(('/get_user_kundali/<string:net_id>'))
+class Q3(Resource):
+    def get(self, net_id = None):
+        if net_id is None: return None, 400
+        data, error_msg, ret_code = db.get_user_kundali(net_id.lower())
+        if error_msg:
+            return {'error': error_msg}, ret_code
+        return data, ret_code

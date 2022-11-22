@@ -43,3 +43,44 @@ class Q3(Resource):
         if error_msg:
             return {'error': error_msg}, ret_code
         return data, ret_code
+
+@ns.route('/get_total_revenue')
+class Q4(Resource):
+    def get(self):
+        data, error_msg, ret_code = db.get_total_revenue()
+        if error_msg:
+            return {'error': error_msg}, ret_code
+        return data[0], ret_code
+
+@ns.route('/get_total_bookings')
+class Q5(Resource):
+    def get(self):
+        data, error_msg, ret_code = db.get_total_bookings()
+        if error_msg:
+            return {'error': error_msg}, ret_code
+        return data[0], ret_code
+
+# ## Bookings by Week day
+@ns.route('bookings_by_weekday')
+class Q6(Resource):
+    def get(self):
+        data, error_msg, ret_code = db.get_bookings_by_weekday()
+        if error_msg:
+            return {'error': error_msg}, ret_code
+        return data, ret_code
+
+@ns.route('/get_total_events_and_tickets_sold')
+class Q7(Resource):
+    def get(self):
+        data, error_msg, ret_code = db.get_total_events_and_tickets_sold()
+        if error_msg:
+            return {'error': error_msg}, ret_code
+        return data[0], ret_code
+
+@ns.route('/get_tickets_sold_per_event')
+class Q8(Resource):
+    def get(self):
+        data, error_msg, ret_code = db.get_tickets_sold_per_event()
+        if error_msg:
+            return {'error': error_msg}, ret_code
+        return data, ret_code

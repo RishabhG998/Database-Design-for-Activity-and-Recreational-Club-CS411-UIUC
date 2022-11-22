@@ -8,8 +8,12 @@ from EquipmentRentals ER left join Equipments E on ER.equipment_id = E.equipment
 select count(slot_id) from SlotBookings;
 
 
-## Total Event bookings with total tickets sold (price?)
-select count(event_id),sum(ticket_count) from EventBookings;
+## Total Event bookings with total tickets sold
+SELECT COUNT(DISTINCT(e.event_name)) AS total_events, SUM(eb.ticket_count) AS total_tickets_sold FROM Events e NATURAL JOIN EventBookings eb;
+
+
+## Get ticket sold per event
+SELECT event_name, SUM(ticket_count) FROM EventBookings natural join events group by event_name
 
 
 ## Bookings by Week day
@@ -25,6 +29,7 @@ select
         end as week_day,
 	   count(slot_id) from SlotBookings
 group by week_day;
+
 
 
 ## Stored Procedure

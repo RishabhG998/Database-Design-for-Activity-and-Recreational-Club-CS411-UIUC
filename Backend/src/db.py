@@ -835,3 +835,143 @@ def get_profitable_events_by_revenue():
         error_msg = error
         ret_code = 500
     return data, error_msg, ret_code
+
+def get_total_revenue():
+    data, error_msg, ret_code = None, None, 400
+    query = "SELECT SUM(E.equipment_rent_per_hour * ER.equipment_count) FROM EquipmentRentals ER LEFT JOIN Equipments E ON ER.equipment_id = E.equipment_id"
+    result, error = run_query(query, return_data = True)
+    if not error:
+        if result != []:
+            data = []
+            for i in range(len(result)):
+                _result = {}
+                for j in range(len(result[i])):
+                    if j == 0:
+                        _result['total_revenue'] = result[i][j]
+                        continue
+                data.append(_result)
+            ret_code = 200
+        else:
+            data = None
+            ret_code = 404
+    else:
+        data = None
+        error_msg = error
+        ret_code = 500
+    return data, error_msg, ret_code
+
+def get_total_bookings():
+    data, error_msg, ret_code = None, None, 400
+    query = "SELECt COUNT(slot_id) FROM SlotBookings;"
+    result, error = run_query(query, return_data = True)
+    if not error:
+        if result != []:
+            data = []
+            for i in range(len(result)):
+                _result = {}
+                for j in range(len(result[i])):
+                    if j == 0:
+                        _result['total_bookings'] = result[i][j]
+                        continue
+                data.append(_result)
+            ret_code = 200
+        else:
+            data = None
+            ret_code = 404
+    else:
+        data = None
+        error_msg = error
+        ret_code = 500
+    return data, error_msg, ret_code
+
+def get_bookings_by_weekday():
+    data, error_msg, ret_code = None, None, 400
+    query = f'''SELECT  
+		CASE WHEN WEEKDAY(booking_date)=0 THEN 'Monday'
+        WHEN WEEKDAY(booking_date)=1 THEN 'Tuesday'
+        WHEN WEEKDAY(booking_date)=2 THEN 'Wednesday'
+        WHEN WEEKDAY(booking_date)=3 THEN 'Thursday'
+        WHEN WEEKDAY(booking_date)=4 THEN 'Friday'
+        WHEN WEEKDAY(booking_date)=5 THEN 'Saturday'
+        WHEN WEEKDAY(booking_date)=6 THEN 'Sunday'
+        ELSE 'Other'
+        end AS week_day,
+	    COUNT(slot_id) FROM SlotBookings GROUP BY week_day;
+    '''
+    result, error = run_query(query, return_data = True)
+    if not error:
+        if result != []:
+            data = []
+            for i in range(len(result)):
+                _result = {}
+                for j in range(len(result[i])):
+                    if j == 0:
+                        _result['week_day'] = result[i][j]
+                        continue
+                    if j == 1:
+                        _result['total_bookings'] = result[i][j]
+                        continue
+                data.append(_result)
+            ret_code = 200
+        else:
+            data = None
+            ret_code = 404
+    else:
+        data = None
+        error_msg = error
+        ret_code = 500
+    return data, error_msg, ret_code
+
+def get_total_events_and_tickets_sold():
+    data, error_msg, ret_code = None, None, 400
+    query = "SELECT COUNT(DISTINCT(e.event_name)) AS total_events, SUM(eb.ticket_count) AS total_tickets_sold FROM Events e NATURAL JOIN EventBookings eb"
+    result, error = run_query(query, return_data = True)
+    if not error:
+        if result != []:
+            data = []
+            for i in range(len(result)):
+                _result = {}
+                for j in range(len(result[i])):
+                    if j == 0:
+                        _result['total_events'] = str(result[i][j])
+                        continue
+                    if j == 1:
+                        _result['total_tickets_sold'] = str(result[i][j])
+                        continue
+                data.append(_result)
+            ret_code = 200
+        else:
+            data = None
+            ret_code = 404
+    else:
+        data = None
+        error_msg = error
+        ret_code = 500
+    return data, error_msg, ret_code
+
+def get_tickets_sold_per_event():
+    data, error_msg, ret_code = None, None, 400
+    query = "SELECT event_name, SUM(ticket_count) FROM EventBookings natural join events group by event_name"
+    result, error = run_query(query, return_data = True)
+    if not error:
+        if result != []:
+            data = []
+            for i in range(len(result)):
+                _result = {}
+                for j in range(len(result[i])):
+                    if j == 0:
+                        _result['event_name'] = str(result[i][j])
+                        continue
+                    if j == 1:
+                        _result['total_tickets_sold'] = str(result[i][j])
+                        continue
+                data.append(_result)
+            ret_code = 200
+        else:
+            data = None
+            ret_code = 404
+    else:
+        data = None
+        error_msg = error
+        ret_code = 500
+    return data, error_msg, ret_code

@@ -130,16 +130,13 @@ CREATE TABLE IF NOT EXISTS EquipmentRentals (
 );
 
 delimiter //
-Create Trigger Delete_User before delete on Users
-for each row
-begin
-
-    declare bookingg varchar(100);
-	set @deleted_net_id = OLD.net_id;
-    
-    insert into AvailableSlots (slot_date, slot_id) select booking_date, slot_id from slotbookings where net_id = @deleted_net_id;
-    
-end//
+CREATE TRIGGER Delete_User BEFORE DELETE ON Users
+FOR EACH ROW
+BEGIN
+    DECLARE bookingg VARCHAR(100);
+	SET @deleted_net_id = OLD.net_id;
+    INSERT INTO AvailableSlots (slot_date, slot_id) SELECT booking_date, slot_id FROM slotbookings WHERE net_id = @deleted_net_id;
+END//
 delimiter ;
 
 

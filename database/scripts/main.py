@@ -164,6 +164,7 @@ def populate_event_bookings(username, password):
 		
 		all_dates = []
 		start_date, end_date = TERM_START_DATE, date.today()
+		# start_date, end_date = TERM_START_DATE, TERM_END_DATE
 		# start_date, end_date = date.today(), TERM_END_DATE
 		delta = end_date - start_date
 		for i in range(delta.days + 1):

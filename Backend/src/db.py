@@ -11,7 +11,7 @@ DB_DIR = '../database'
 db_files = list(glob.glob(f'{DB_DIR}/*.sql'))
 DB = max(db_files, key=os.path.getctime)
 DB_USER = 'root'
-DB_PASS = 'roottoor'
+DB_PASS = 'root'
 DATETIME_STRING_FORMAT = f'%Y{main.DATE_SEPARATOR}%m{main.DATE_SEPARATOR}%d'
 
 def run_query(query, execute_many = False, get_status = False, return_data = False, get_columns = False):

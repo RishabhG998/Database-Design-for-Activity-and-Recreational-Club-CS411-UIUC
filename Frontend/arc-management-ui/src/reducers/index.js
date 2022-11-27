@@ -97,16 +97,41 @@ const initialState = {
         return {
           ...state,
           advQuery1Results: action.payload
-        }
+        };
       case "ADV_QUERY_2_RESULTS":
         return {
           ...state,
           advQuery2Results: action.payload
-        }
+        };
         case "EVENT_CREATE":
           return {
             ...state
           };
+        case "ADV_TICKETS_SOLD_PER_EVENT":
+        return {
+          ...state,
+          advTicketsSoldPerEvent: action.payload
+        };
+        case "ADV_BOOKINGS_PER_DAY":
+        return {
+          ...state,
+          advBookingsPerDay: action.payload
+        };
+        case "ADV_TOTAL_BOOKINGS":
+          return {
+            ...state,
+            advTotalBookings: action.payload
+          };
+          case "ADV_TOTAL_EVENTS_TICKETS_SOLD":
+            return {
+              ...state,
+              advTotalEventsTicketsSold: action.payload
+            };
+          case "ADV_TOTAL_REVENUE_EARNED":
+            return {
+              ...state,
+              advTotalRevenue: action.payload
+            }
       default:
         // If this reducer doesn't recognize the action type, or doesn't
         // care about this specific action, return the existing state unchanged

@@ -58,3 +58,23 @@ export function createEventCall(requestBody){
     return axios.post(`${baseUrl}/events/events`, requestBody , { headers: requestHeader});
 
 };
+
+export function getTicketsSoldPerEventCall() {
+    return axios.get(`${baseUrl}/adv_query/get_tickets_sold_per_event`);
+};
+
+export function getBookingsPerDayCall() {
+    return axios.get(`${baseUrl}/adv_querybookings_by_weekday`);
+};
+
+export function getTotalBookingsCall() {
+    return axios.get(`${baseUrl}/adv_query/get_total_bookings`);
+};
+
+export function getTotalEventsAndTicketsSoldCall() {
+    return axios.get(`${baseUrl}/adv_query/get_total_events_and_tickets_sold`);
+};
+
+export function getTotalRevenueEarnedCall() {
+    return axios.get(`${baseUrl}/adv_query/get_total_revenue`);
+};

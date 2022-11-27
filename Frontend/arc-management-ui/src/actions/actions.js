@@ -11,7 +11,12 @@ import {
     getEquipmentsForSportCall,
     getAllAvailableSlots,
     bookEquipmentSlotCall,
-    createEventCall } from "../services/services";
+    createEventCall,
+    getTicketsSoldPerEventCall,
+    getBookingsPerDayCall,
+    getTotalBookingsCall,
+    getTotalEventsAndTicketsSoldCall,
+    getTotalRevenueEarnedCall } from "../services/services";
 
 export async function  getUserInfo(netId) {
     return getUserInfoCall(netId).then((response) => {
@@ -230,6 +235,76 @@ export function getAdvQuery2Results() {
         return {
             type: "ADV_QUERY_2_RESULTS",
             payload: formattedStats
+        };
+    });
+};
+
+export function getTicketsSoldPerEventResults() {
+    return getTicketsSoldPerEventCall().then((response) => {
+        const stats = response.data;
+        const formattedStats = stats.map(stat => {
+            return {
+                eventName: stat.event_name,
+                totalTicketsSold: stat.total_tickets_sold
+            }
+        });
+        return {
+            type: "ADV_TICKETS_SOLD_PER_EVENT",
+            payload: formattedStats
+        };
+    });
+};
+
+export function getBookingsPerDayResults() {
+    return getBookingsPerDayCall().then((response) => {
+        const stats = response.data;
+        const formattedStats = stats.map(stat => {
+            return {
+                weekDay: stat.week_day,
+                totalBookings: stat.total_bookings
+            }
+        });
+        return {
+            type: "ADV_BOOKINGS_PER_DAY",
+            payload: formattedStats
+        };
+    });
+};
+
+export function getTotalBookings() {
+    return getTotalBookingsCall().then((response) => {
+        const stats = response.data;
+
+        return {
+            type: "ADV_TOTAL_BOOKINGS",
+            payload: {totalBookings: stats.total_bookings}
+        };
+    });
+};
+
+export function getTotalEventsAndTicketsSold() {
+    return getTotalEventsAndTicketsSoldCall().then((response) => {
+        const stats = response.data;
+
+        return {
+            type: "ADV_TOTAL_EVENTS_TICKETS_SOLD",
+            payload: {
+                totalEvents: stats.total_events,
+                totalTicketsSold: stats.total_tickets_sold
+            }
+        };
+    });
+};
+
+export function getTotalRevenueEarned() {
+    return getTotalRevenueEarnedCall().then((response) => {
+        const stats = response.data;
+
+        return {
+            type: "ADV_TOTAL_REVENUE_EARNED",
+            payload: {
+                totalRevenue: stats.total_revenue,
+            }
         };
     });
 };

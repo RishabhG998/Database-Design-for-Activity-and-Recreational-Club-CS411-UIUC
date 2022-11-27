@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import { createTheme, CssBaseline, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider, Typography, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { Box, Container, styled } from "@mui/system";
 import { tableCellClasses } from '@mui/material/TableCell';
-import { getAdvQuery1Results, getAdvQuery2Results, getAllSports } from "../actions/actions";
+import { getAdvQuery1Results, getAdvQuery2Results, getAllSports, getTicketsSoldPerEventResults, getBookingsPerDayResults, getTotalBookings,getTotalEventsAndTicketsSold, getTotalRevenueEarned } from "../actions/actions";
 import "./show-stats.css";
+import { Card, CardActions, CardContent, CardMedia, Grid } from "@mui/material";
 
 const theme = createTheme({
     typography: {
@@ -47,9 +48,14 @@ export class ShowStats extends PureComponent {
     }
 
     async componentDidMount () {
-        const { getAllSports, getAdvQuery2Results } = this.props;
+        const { getAllSports, getAdvQuery2Results, getTicketsSoldPerEventResults, getBookingsPerDayResults, getTotalBookings, getTotalEventsAndTicketsSold, getTotalRevenueEarned } = this.props;
         await getAllSports();
         await getAdvQuery2Results();
+        await getTicketsSoldPerEventResults();
+        await getBookingsPerDayResults();
+        await getTotalBookings();
+        await getTotalEventsAndTicketsSold();
+        await getTotalRevenueEarned();
     };
 
     getAllSportsOption = () => {
@@ -91,17 +97,40 @@ export class ShowStats extends PureComponent {
 
     render(){
         // console.log(this.props.advQuery1Results);
-        const { advQuery1Results, advQuery2Results, allSports } = this.props;
+        const { advQuery1Results, advQuery2Results, allSports, advTicketsSoldPerEvent, advBookingsPerDay, advTotalBookings, advTotalEventsTicketsSold, advTotalRevenue } = this.props;
         const { showGraph1 } = this.state;
         return (
             <div>
                 <ThemeProvider theme={theme}>
                     <Container id="stats-container" component="main" maxWidth="xs">
                         <CssBaseline/>
-                        <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+                        <Box sx={{ marginTop: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
                             <Paper elevation={10} style={paperStyle}>
-                                <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
-                                    <Typography sx= {{ marginBottom: 1 }} component="h1" variant="h4">Statistics</Typography>
+                                <Box sx={{ marginTop: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+                                <Typography sx= {{ marginBottom: 1 }} component="h1" variant="h4">Statistics</Typography>
+                                </Box>
+                                
+                            </Paper>
+                        </Box>
+                        <Box sx={{ marginTop: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+                            <Paper elevation={10} style={paperStyle}>
+                                <Box sx={{ marginTop: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+                                    {advTotalBookings && <Typography gutterBottom variant="h6" component="h1">Total Bookings: {advTotalBookings.totalBookings} </Typography> }
+                                    {advTotalEventsTicketsSold 
+                                    && 
+                                    <div>
+                                        <Typography gutterBottom variant="h6" component="h1">Total Events: {advTotalEventsTicketsSold.totalEvents}</Typography>
+                                        <Typography gutterBottom variant="h6" component="h1">Tickets Sold: {advTotalEventsTicketsSold.totalTicketsSold}</Typography>
+                                    </div>
+                                    }
+                                    {advTotalRevenue && <Typography gutterBottom variant="h6" component="h1">Total Bookings: ${advTotalRevenue.totalRevenue} </Typography> }
+                                </Box>
+                                
+                            </Paper>
+                        </Box>
+                        <Box sx={{ marginTop: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+                            <Paper elevation={10} style={paperStyle}>
+                                <Box sx={{ marginTop: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
                                     <Typography sx= {{ marginBottom: 3 }} component="h1" variant="h6">Query 1: Top 5 users who spent time playing a Sport</Typography>
                                     {allSports && allSports.length>0 && this.getAllSportsOption()}
                                     {showGraph1 && 
@@ -153,22 +182,22 @@ export class ShowStats extends PureComponent {
                         <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
                             <Paper elevation={10} style={paperStyle}>
                                 <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
-                                    <Typography sx= {{ marginBottom: 3 }} component="h1" variant="h6">Query 2: Top 5 revenue earning Events</Typography>
+                                    <Typography sx= {{ marginBottom: 3 }} component="h1" variant="h6">Query 3: List of Tickets Sold Per Event</Typography>
                                     <TableContainer component={Paper}>
                                         <Table sx={{ minWidth: 500 }} aria-label="customized table">
                                             <TableHead>
                                             <TableRow>
                                                 <StyledTableCell align="center">Event Name</StyledTableCell>
-                                                <StyledTableCell align="center">Total Revenue</StyledTableCell>
+                                                <StyledTableCell align="center">Tickets Sold</StyledTableCell>
                                             </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                            {advQuery2Results && advQuery2Results.map((row) => (
+                                            {advTicketsSoldPerEvent && advTicketsSoldPerEvent.map((row) => (
                                                 <StyledTableRow key={row.eventName}>
                                                 <StyledTableCell align="center" component="th" scope="row">
                                                     {row.eventName}
                                                 </StyledTableCell>
-                                                <StyledTableCell align="center">{row.totalRevenue}</StyledTableCell>
+                                                <StyledTableCell align="center">{row.totalTicketsSold}</StyledTableCell>
                                                 </StyledTableRow>
                                             ))}
                                             </TableBody>
@@ -178,6 +207,35 @@ export class ShowStats extends PureComponent {
                                 
                             </Paper>
                         </Box>
+                        <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+                            <Paper elevation={10} style={paperStyle}>
+                                <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+                                    <Typography sx= {{ marginBottom: 3 }} component="h1" variant="h6">Query 4: Statistics showing bookings per day</Typography>
+                                    <TableContainer component={Paper}>
+                                        <Table sx={{ minWidth: 500 }} aria-label="customized table">
+                                            <TableHead>
+                                            <TableRow>
+                                                <StyledTableCell align="center">Day</StyledTableCell>
+                                                <StyledTableCell align="center">Total Bookings</StyledTableCell>
+                                            </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                            {advBookingsPerDay && advBookingsPerDay.map((row) => (
+                                                <StyledTableRow key={row.weekDay}>
+                                                <StyledTableCell align="center" component="th" scope="row">
+                                                    {row.weekDay}
+                                                </StyledTableCell>
+                                                <StyledTableCell align="center">{row.totalBookings}</StyledTableCell>
+                                                </StyledTableRow>
+                                            ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </Box>
+                                
+                            </Paper>
+                        </Box>
+                        
                     </Container>
                 </ThemeProvider>
             </div>
@@ -190,7 +248,12 @@ const mapStateToProps = (state) => {
     return {
         advQuery1Results: state.advQuery1Results,
         advQuery2Results: state.advQuery2Results,
-        allSports: state.allSports
+        allSports: state.allSports,
+        advTicketsSoldPerEvent: state.advTicketsSoldPerEvent,
+        advBookingsPerDay: state.advBookingsPerDay,
+        advTotalBookings: state.advTotalBookings,
+        advTotalEventsTicketsSold: state.advTotalEventsTicketsSold,
+        advTotalRevenue: state.advTotalRevenue
     };
 };
 
@@ -198,7 +261,12 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getAdvQuery1Results: async (sportId) => dispatch(await getAdvQuery1Results(sportId)),
         getAdvQuery2Results: async () => dispatch(await getAdvQuery2Results()),
-        getAllSports: async () => dispatch(await getAllSports())        
+        getAllSports: async () => dispatch(await getAllSports()),        
+        getTicketsSoldPerEventResults: async () => dispatch(await getTicketsSoldPerEventResults()),
+        getBookingsPerDayResults: async () => dispatch(await getBookingsPerDayResults()),
+        getTotalBookings: async () => dispatch(await getTotalBookings()),
+        getTotalEventsAndTicketsSold: async () => dispatch(await getTotalEventsAndTicketsSold()),
+        getTotalRevenueEarned: async () => dispatch(await getTotalRevenueEarned()),
     };
   };
 

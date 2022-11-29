@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import React from "react";
 import Button from '@mui/material/Button';
 import stats_img from './images/stats.png';
+import user_info from './images/userinfo.png';
 import supervisor_img from './images/supervisor.png';
 import equipment_img from './images/equipment.png';
 import facilities_img from './images/facilities.png';
@@ -44,6 +45,9 @@ export class AdminHome extends PureComponent{
         
         if (e.target.name === 'see_stats_card') {
             this.props.navigate('/showStats');
+        }
+        else if (e.target.name === 'see_userinfo_card') {
+            this.props.navigate('/userInfo');
         }
         else if (e.target.name === 'edit_user') {
             this.props.navigate('/editUser');
@@ -110,6 +114,36 @@ export class AdminHome extends PureComponent{
                                 {/* <FaceIcon/> */}
                                 <CardActions sx={{ height: '100%', display: 'flex', flexDirection: 'column' }} >
                                     <Button sx={{alignItems: "center", justifyContent: "center", marginBottom: "21%"}} name="see_stats_card" size="small" onClick={this.onClick} variant="outlined" endIcon={<SendIcon/>}>View</Button>
+                                    {/* <Button size="small">Edit</Button> */}
+                                </CardActions>
+                            </Card> 
+                        </Grid>
+                        <Grid item={1} xs={12} sm={6} md={4} sx={{  display: 'flex', flexDirection: 'column'}} >
+                            <Card
+                            sx={{  display: 'flex', flexDirection: 'column', alignItems: "center", justifyContent: "center", boxShadow: 12}} 
+                            >
+                                <CardMedia
+                                    component="img"
+                                    sx={{
+                                    // 16:9
+                                        pt: '10%',
+                                        width: '44%',
+                                    }}
+                                    image={user_info}
+                                    alt="random"
+                                    name="User-Info"
+                                />
+                                <CardContent sx={{ flexGrow: 1 }}> 
+                                    <Typography gutterBottom variant="h5" component="h2">
+                                    User Info
+                                    </Typography>
+                                    {/* <Typography>
+                                    Click here to see ARC statistics
+                                    </Typography> */}
+                                </CardContent>
+                                {/* <FaceIcon/> */}
+                                <CardActions sx={{ height: '100%', display: 'flex', flexDirection: 'column' }} >
+                                    <Button sx={{alignItems: "center", justifyContent: "center", marginBottom: "21%"}} name="see_userinfo_card" size="small" onClick={this.onClick} variant="outlined" endIcon={<SendIcon/>}>View</Button>
                                     {/* <Button size="small">Edit</Button> */}
                                 </CardActions>
                             </Card> 

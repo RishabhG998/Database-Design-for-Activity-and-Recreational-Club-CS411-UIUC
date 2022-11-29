@@ -16,7 +16,8 @@ import {
     getBookingsPerDayCall,
     getTotalBookingsCall,
     getTotalEventsAndTicketsSoldCall,
-    getTotalRevenueEarnedCall } from "../services/services";
+    getTotalRevenueEarnedCall,
+    getUserKundaliCall } from "../services/services";
 
 export async function  getUserInfo(netId) {
     return getUserInfoCall(netId).then((response) => {
@@ -308,6 +309,45 @@ export function getTotalRevenueEarned() {
         };
     });
 };
+
+export async function  getUserKundali(netId) {
+    return getUserKundaliCall(netId).then((response) => {
+        const stats = response.data;
+        const formattedStats = stats.map(stat => {
+            return {
+                netId: stats.net_idd,
+                name: stats.namee,
+                contactNumber: stats.contact_numberr,
+                emailID: stats.email_idd,
+                dob: stats.date_of_birthh,
+                roleID: stats.role_idd,
+                roleName: stats.role_namee,
+                roleDescription: stats.role_descriptionn,
+                facilitiesUsed: stats.facilities_usedd,
+                slotsBooked: stats.slots_bookedd,
+                eventsBooked: stats.events_bookedd,
+                ticketsBooked: stats.tickets_bookedd,
+                equipmentBooked: stats.equipment_countt,
+                equipmentRentCost: stats.total_equipment_rentt,
+                totalTicketCost: stats.total_tickets_costt,
+                totalRentPaid: stats.total_rent_paidd,
+                netId2: stats.net_id22,
+                startTime: stats.start_timee,
+                endTime: stats.end_timee,
+                slotId: stats.slot_idd,
+                bookingDate: stats.booking_datee,
+                facilityId: stats.facility_idd,
+                facilityName: stats.facility_namee,
+                slotDate: stats.slot_datee     
+            }
+        });
+        return {
+            type: "USER_KUNDALI_FETCH",
+            payload: formattedStats
+        }
+    });
+};
+
 
 export async function createEvent(requestBody) {
 

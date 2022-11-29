@@ -11,6 +11,7 @@ import FacilitiesBooking from "./components/facilities-booking";
 import EquipmentBooking from "./components/equipment-booking";
 import CreateEvent from "./components/event-create"
 import ShowStats from './components/show-stats';
+import UserInfo from './components/user-info';
 
 export class App extends PureComponent {
 
@@ -35,7 +36,8 @@ export class App extends PureComponent {
             <Route path="equipmentBooking" element={<EquipmentBooking />}/>
             <Route path="createEvent" element={<CreateEvent />}/>
             <Route path="showStats" element={<ShowStats />}/>
-          </Routes>
+            <Route path='userInfo' element= {<UserInfo/>}/>
+           </Routes>
         </BrowserRouter>
       </div>
     )

@@ -132,6 +132,11 @@ const initialState = {
               ...state,
               advTotalRevenue: action.payload
             }
+          case "USER_KUNDALI_FETCH":
+            return {
+              ...state,
+              userKundali: action.payload
+            }
       default:
         // If this reducer doesn't recognize the action type, or doesn't
         // care about this specific action, return the existing state unchanged

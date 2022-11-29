@@ -78,3 +78,7 @@ export function getTotalEventsAndTicketsSoldCall() {
 export function getTotalRevenueEarnedCall() {
     return axios.get(`${baseUrl}/adv_query/get_total_revenue`);
 };
+
+export function getUserKundaliCall(netId) {
+    return axios.get(`${baseUrl}/adv_query/get_user_kundali/${netId}`, { headers: requestHeader });
+};

@@ -56,31 +56,7 @@ export class UserInfo extends PureComponent {
         super(props);
         this.state = {
             enteredNetId: "",
-            actionSuccess: false,
-            entered_netId: "",
-            entered_name: "",
-            entered_contactNumber: "",
-            entered_emailID: "",
-            entered_dob: "",
-            entered_roleID: "",
-            entered_roleName: "",
-            entered_roleDescription: "",
-            // entered_facilitiesUsed: "",
-            // entered_slotsBooked: "",
-            // entered_eventsBooked: "",
-            // entered_ticketsBooked: "",
-            // entered_equipmentBooked: "",
-            // entered_equipmentRentCost: "",
-            // entered_totalTicketCost: "",
-            // entered_totalRentPaid: "",
-            // entered_netId2: "",
-            // entered_startTime: "",
-            // entered_endTime: "",
-            // entered_slotId: "",
-            // entered_bookingDate: "",
-            // entered_facilityId: "",
-            // entered_facilityName: "",
-            // entered_slotDate: "",
+            actionSuccess: false
         };
     }
 
@@ -91,44 +67,13 @@ export class UserInfo extends PureComponent {
     handleOnGetInfoClick = async () => {
         const { getUserKundali } = this.props;
         const { enteredNetId } = this.state;
-
-        await getUserKundali(enteredNetId).then( () => {
-            const { userKundali } = this.props;
-            debugger; 
-            this.setState({ 
-                entered_netId: userKundali[0].netId,
-                entered_name: userKundali[0].name,
-                entered_contactNumber: userKundali[0].contactNumber,
-                entered_emailID: userKundali[0].emailID,
-                entered_dob: userKundali[0].dob,
-                entered_roleID: userKundali[0].roleID,
-                entered_roleName: userKundali[0].roleName,
-                entered_roleDescription: userKundali[0].roleDescription,
-                // entered_facilitiesUsed: userKundali.facilitiesUsed,
-                // entered_slotsBooked: userKundali.slotsBooked,
-                // entered_eventsBooked: userKundali.eventsBooked,
-                // entered_ticketsBooked: userKundali.ticketBooked,
-                // entered_equipmentBooked: userKundali.equipmentBooked,
-                // entered_equipmentRentCost: userKundali.equipmentRentCost,
-                // entered_totalTicketCost: userKundali.totalTicketCost,
-                // entered_totalRentPaid: userKundali.totalRentPaid,
-                // entered_netId2: userKundali.netId2,
-                // entered_startTime: userKundali.startTime,
-                // entered_endTime: userKundali.endTime,
-                // entered_slotId: userKundali.slotId,
-                // entered_bookingDate: userKundali.bookingDate,
-                // entered_facilityId: userKundali.facilityId,
-                // entered_facilityName: userKundali.facilityName,
-                // entered_slotDate: userKundali.slotDate,
-            });
-        });  
-
+        await getUserKundali(enteredNetId); 
     }
 
     render() {
-        const { enteredNetId, entered_netId, entered_name } = this.state;
+        const { enteredNetId } = this.state;
         const { userKundali } = this.props;
-        
+
         return (
 
             <ThemeProvider theme={theme}>
@@ -143,6 +88,88 @@ export class UserInfo extends PureComponent {
                                     <Button id="getUserInfo" onClick={this.handleOnGetInfoClick} variant="contained">Get User Info</Button>
                                 </Box>
                             </Box>
+                            { userKundali && userKundali.length>0 &&
+                                <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+                                    <Paper elevation={10} style={paperStyle}>
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+                                            <Typography sx= {{ marginBottom: 3 }} component="h1" variant="h6">User Info</Typography>
+                                            <TableContainer component={Paper}>
+                                                <Table sx={{ minWidth: 500 }} aria-label="customized table">
+                                                    <TableBody>
+                                                        <StyledTableRow key="Net Id">
+                                                            <StyledTableCell align="center">Net Id</StyledTableCell>
+                                                            <StyledTableCell align="center" component="th" scope="row">
+                                                                {userKundali[0].netId}
+                                                            </StyledTableCell>
+                                                        </StyledTableRow>
+                                                        <StyledTableRow key="Name">
+                                                            <StyledTableCell align="center">Name</StyledTableCell>
+                                                            <StyledTableCell align="center" component="th" scope="row">
+                                                                {userKundali[0].name}
+                                                            </StyledTableCell>
+                                                        </StyledTableRow>
+                                                        <StyledTableRow key="Contact Number">
+                                                            <StyledTableCell align="center">Contact Number</StyledTableCell>
+                                                            <StyledTableCell align="center" component="th" scope="row">
+                                                                {userKundali[0].contactNumber}
+                                                            </StyledTableCell>
+                                                        </StyledTableRow>
+                                                        <StyledTableRow key="Email Id">
+                                                            <StyledTableCell align="center">Email Id</StyledTableCell>
+                                                            <StyledTableCell align="center" component="th" scope="row">
+                                                                {userKundali[0].emailID}
+                                                            </StyledTableCell>
+                                                        </StyledTableRow>
+                                                        <StyledTableRow key="Date of Birth">
+                                                            <StyledTableCell align="center">Date of Birth</StyledTableCell>
+                                                            <StyledTableCell align="center" component="th" scope="row">
+                                                                {userKundali[0].dob}
+                                                            </StyledTableCell>
+                                                        </StyledTableRow>
+                                                        <StyledTableRow key="Role">
+                                                            <StyledTableCell align="center">Role</StyledTableCell>
+                                                            <StyledTableCell align="center" component="th" scope="row">
+                                                                {userKundali[0].roleName}
+                                                            </StyledTableCell>
+                                                        </StyledTableRow>
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                        </Box>
+                                    </Paper>
+                                </Box>
+                            }
+                            { userKundali && userKundali.length>0 &&
+                                <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+                                    <Paper elevation={10} style={paperStyle}>
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+                                            <Typography sx= {{ marginBottom: 3 }} component="h1" variant="h6">User Slot Booking History</Typography>
+                                            <TableContainer component={Paper}>
+                                                <Table sx={{ minWidth: 500 }} aria-label="customized table">
+                                                    <TableHead>
+                                                    <TableRow>
+                                                        <StyledTableCell align="center">Facility Name</StyledTableCell>
+                                                        <StyledTableCell align="center">Slot Date</StyledTableCell>
+                                                        <StyledTableCell align="center">Start Time</StyledTableCell>
+                                                        <StyledTableCell align="center">End Time</StyledTableCell>
+                                                    </TableRow>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                        {userKundali.filter(row => row && row.facilityName && (row.facilityName !== "None")).map((row, i) => (
+                                                            <StyledTableRow key={i}>
+                                                                <StyledTableCell align="center" component="th" scope="row"> {row.facilityName}</StyledTableCell>
+                                                                <StyledTableCell align="center">{row.slotDate}</StyledTableCell>
+                                                                <StyledTableCell align="center">{row.startTime}</StyledTableCell>
+                                                                <StyledTableCell align="center">{row.endTime}</StyledTableCell>
+                                                            </StyledTableRow>
+                                                        ))}
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                        </Box>
+                                    </Paper>
+                                </Box>
+                            }
                         </Paper>
                     </Box> 
                 </Container>

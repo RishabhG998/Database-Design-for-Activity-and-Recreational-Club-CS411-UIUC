@@ -6,7 +6,15 @@ import { Box, Container, styled } from "@mui/system";
 import { tableCellClasses } from '@mui/material/TableCell';
 import { getAdvQuery1Results, getAdvQuery2Results, getAllSports, getTicketsSoldPerEventResults, getBookingsPerDayResults, getTotalBookings,getTotalEventsAndTicketsSold, getTotalRevenueEarned } from "../actions/actions";
 import "./show-stats.css";
-import { Card, CardActions, CardContent, CardMedia, Grid } from "@mui/material";
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend
+} from "recharts";
 
 const theme = createTheme({
     typography: {
@@ -96,9 +104,10 @@ export class ShowStats extends PureComponent {
     }
 
     render(){
-        // console.log(this.props.advQuery1Results);
+        
         const { advQuery1Results, advQuery2Results, allSports, advTicketsSoldPerEvent, advBookingsPerDay, advTotalBookings, advTotalEventsTicketsSold, advTotalRevenue } = this.props;
         const { showGraph1 } = this.state;
+        
         return (
             <div>
                 <ThemeProvider theme={theme}>
@@ -210,28 +219,26 @@ export class ShowStats extends PureComponent {
                             <Paper elevation={10} style={paperStyle}>
                                 <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
                                     <Typography sx= {{ marginBottom: 3 }} component="h1" variant="h6">Query 4: Statistics showing bookings per day</Typography>
-                                    <TableContainer component={Paper}>
-                                        <Table sx={{ minWidth: 500 }} aria-label="customized table">
-                                            <TableHead>
-                                            <TableRow>
-                                                <StyledTableCell align="center">Day</StyledTableCell>
-                                                <StyledTableCell align="center">Total Bookings</StyledTableCell>
-                                            </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                            {advBookingsPerDay && advBookingsPerDay.map((row) => (
-                                                <StyledTableRow key={row.weekDay}>
-                                                <StyledTableCell align="center" component="th" scope="row">
-                                                    {row.weekDay}
-                                                </StyledTableCell>
-                                                <StyledTableCell align="center">{row.totalBookings}</StyledTableCell>
-                                                </StyledTableRow>
-                                            ))}
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                </Box>
-                                
+                                    {advBookingsPerDay && advBookingsPerDay.length>0 &&
+                                        <BarChart
+                                            width={500}
+                                            height={500}
+                                            data={advBookingsPerDay}
+                                            margin={{
+                                                top: 5,
+                                                right: 30,
+                                                left: 20,
+                                                bottom: 5
+                                            }}
+                                            >
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="weekDay" angle={-45} textAnchor="end" interval={0}/>
+                                            <YAxis />
+                                            <Tooltip />
+                                            <Legend />
+                                            <Bar dataKey="totalBookings" fill="#8884d8" />
+                                        </BarChart>}
+                                </Box>    
                             </Paper>
                         </Box>
                         

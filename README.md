@@ -1,5 +1,10 @@
 # fa22-cs411-Q-team028-SRKC
 
+## Link to Project Presentation
+[Video Presentation](https://drive.google.com/file/d/1xQHQJCbAfXUmUguyhuHygJMdyi5nenTr/view?usp=sharing)
+
+<br />
+
 This is a template for CS411 project repository. Please make sure that your title follows the convention: Q-[TeamID]-[YourTeamName]. All TeamID should have a three digit coding (i.e. if you are team 20, you should have `team020` as your ID.). You should also make sure that your url for this repository is [fa22-cs411-Q-team000-teamname.git] so TAs can correctly clone your repository and keep them up-to-date.
 
 Once you setup your project, please remember to submit your team formation to the team form.
